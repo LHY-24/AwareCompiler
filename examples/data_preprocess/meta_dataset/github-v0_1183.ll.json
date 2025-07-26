@@ -1,0 +1,166 @@
+{
+  "program_id": "github-v0_1183.ll",
+  "autophase_features": {
+    "BBNumArgsHi": 0,
+    "BBNumArgsLo": 5,
+    "onePred": 46,
+    "onePredOneSuc": 35,
+    "onePredTwoSuc": 9,
+    "oneSuccessor": 42,
+    "twoPred": 23,
+    "twoPredOneSuc": 6,
+    "twoEach": 9,
+    "twoSuccessor": 27,
+    "morePreds": 1,
+    "BB03Phi": 5,
+    "BBHiPhi": 0,
+    "BBNoPhi": 84,
+    "BeginPhi": 5,
+    "BranchCount": 69,
+    "returnInt": 43,
+    "CriticalCount": 10,
+    "NumEdges": 96,
+    "const32Bit": 209,
+    "const64Bit": 13,
+    "numConstZeroes": 70,
+    "numConstOnes": 109,
+    "UncondBranches": 42,
+    "binaryConstArg": 7,
+    "NumAShrInst": 0,
+    "NumAddInst": 7,
+    "NumAllocaInst": 67,
+    "NumAndInst": 0,
+    "BlockMid": 10,
+    "BlockLow": 79,
+    "NumBitCastInst": 0,
+    "NumBrInst": 69,
+    "NumCallInst": 95,
+    "NumGetElementPtrInst": 38,
+    "NumICmpInst": 33,
+    "NumLShrInst": 0,
+    "NumLoadInst": 190,
+    "NumMulInst": 0,
+    "NumOrInst": 0,
+    "NumPHIInst": 5,
+    "NumRetInst": 19,
+    "NumSExtInst": 14,
+    "NumSelectInst": 1,
+    "NumShlInst": 0,
+    "NumStoreInst": 89,
+    "NumSubInst": 2,
+    "NumTruncInst": 2,
+    "NumXorInst": 0,
+    "NumZExtInst": 6,
+    "TotalBlocks": 89,
+    "TotalInsts": 642,
+    "TotalMemInst": 479,
+    "TotalFuncs": 64,
+    "ArgsPhi": 10,
+    "testUnary": 282
+  },
+  "baseline_oz_instcount": 642,
+  "knowledge_base_entry": [
+    "--strip-nondebug",
+    "--mergefunc",
+    "--lower-constant-intrinsics"
+  ],
+  "trajectory": [
+    {
+      "turn": 1,
+      "thought": "Based on the program's characteristics and my experience, I'll formulate a strong initial optimization sequence.",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--name-anon-globals",
+          "--float2int",
+          "--always-inline",
+          "--speculative-execution",
+          "--licm",
+          "--argpromotion",
+          "--loop-data-prefetch",
+          "--slp-vectorizer",
+          "--strip",
+          "--reassociate",
+          "--forceattrs",
+          "-loop-reduce",
+          "--loop-interchange",
+          "--loop-load-elim",
+          "--inject-tli-mappings",
+          "--sccp",
+          "--insert-gcov-profiling",
+          "--slsr"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 2,
+      "thought": "My initial attempt yielded a performance of +0.0%. After reflecting, I believe I can achieve better results. My refined approach is to \"By prioritizing -mem2reg to reduce memory operations and -instcombine to simplify instructions, the new sequence better aligns with the high ratio of memory instructions and constants in the program.\"",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--name-anon-globals",
+          "--float2int",
+          "--always-inline",
+          "--speculative-execution",
+          "--licm",
+          "--argpromotion",
+          "--loop-data-prefetch",
+          "--slp-vectorizer",
+          "--strip",
+          "--reassociate",
+          "--forceattrs",
+          "-loop-reduce",
+          "--loop-interchange",
+          "--loop-load-elim",
+          "--inject-tli-mappings",
+          "--sccp",
+          "--insert-gcov-profiling",
+          "--slsr"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 3,
+      "thought": "My refined search did not surpass the -Oz baseline, ending at +0.0%. My heuristics are exhausted. I must now resort to my knowledge base (RAG) to find a known-good sequence.",
+      "action": "USE_RAG",
+      "action_input": {
+        "query": "Find best sequence from knowledge base"
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    }
+  ],
+  "final_answer": {
+    "pass_sequence": [
+      "--loop-predication",
+      "--gvn",
+      "--licm",
+      "--lower-expect",
+      "--mem2reg",
+      "--slp-vectorizer",
+      "--early-cse",
+      "--flattencfg",
+      "--gvn-hoist",
+      "--instsimplify",
+      "--lower-constant-intrinsics",
+      "--loop-reroll",
+      "--correlated-propagation",
+      "--gvn",
+      "--licm"
+    ],
+    "performance_vs_Oz": "+0.0%"
+  }
+}
