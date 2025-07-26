@@ -1,0 +1,176 @@
+{
+  "program_id": "linux-v0_925.ll",
+  "autophase_features": {
+    "BBNumArgsHi": 0,
+    "BBNumArgsLo": 0,
+    "onePred": 42,
+    "onePredOneSuc": 27,
+    "onePredTwoSuc": 13,
+    "oneSuccessor": 35,
+    "twoPred": 10,
+    "twoPredOneSuc": 5,
+    "twoEach": 3,
+    "twoSuccessor": 19,
+    "morePreds": 2,
+    "BB03Phi": 0,
+    "BBHiPhi": 0,
+    "BBNoPhi": 66,
+    "BeginPhi": 0,
+    "BranchCount": 54,
+    "returnInt": 4,
+    "CriticalCount": 7,
+    "NumEdges": 73,
+    "const32Bit": 148,
+    "const64Bit": 15,
+    "numConstZeroes": 72,
+    "numConstOnes": 57,
+    "UncondBranches": 35,
+    "binaryConstArg": 8,
+    "NumAShrInst": 0,
+    "NumAddInst": 5,
+    "NumAllocaInst": 46,
+    "NumAndInst": 1,
+    "BlockMid": 5,
+    "BlockLow": 61,
+    "NumBitCastInst": 7,
+    "NumBrInst": 54,
+    "NumCallInst": 22,
+    "NumGetElementPtrInst": 44,
+    "NumICmpInst": 20,
+    "NumLShrInst": 0,
+    "NumLoadInst": 115,
+    "NumMulInst": 0,
+    "NumOrInst": 1,
+    "NumPHIInst": 0,
+    "NumRetInst": 12,
+    "NumSExtInst": 9,
+    "NumSelectInst": 0,
+    "NumShlInst": 0,
+    "NumStoreInst": 66,
+    "NumSubInst": 1,
+    "NumTruncInst": 3,
+    "NumXorInst": 2,
+    "NumZExtInst": 8,
+    "TotalBlocks": 66,
+    "TotalInsts": 424,
+    "TotalMemInst": 293,
+    "TotalFuncs": 16,
+    "ArgsPhi": 0,
+    "testUnary": 196
+  },
+  "baseline_oz_instcount": 423,
+  "knowledge_base_entry": [
+    "--licm",
+    "--adce",
+    "--elim-avail-extern",
+    "--lower-expect",
+    "--dce",
+    "--load-store-vectorizer",
+    "--inline",
+    "--mergefunc",
+    "--globalopt",
+    "--flattencfg",
+    "--ipsccp"
+  ],
+  "trajectory": [
+    {
+      "turn": 1,
+      "thought": "Based on the program's characteristics and my experience, I'll formulate a strong initial optimization sequence.",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--newgvn",
+          "--bdce",
+          "--memcpyopt",
+          "--deadargelim",
+          "--prune-eh",
+          "--jump-threading",
+          "--ipsccp",
+          "--loop-interchange",
+          "--globaldce",
+          "--gvn-hoist",
+          "--strip-dead-prototypes",
+          "--called-value-propagation",
+          "--aggressive-instcombine",
+          "--rpo-functionattrs",
+          "--inline",
+          "--loop-unroll-and-jam",
+          "--instsimplify",
+          "--post-inline-ee-instrument",
+          "--loop-instsimplify",
+          "--coro-split",
+          "--mldst-motion"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 2,
+      "thought": "My initial attempt yielded a performance of +0.0%. After reflecting, I believe I can achieve better results. My refined approach is to \"By prioritizing -mem2reg and -constprop to reduce memory operations and constant overhead, the new sequence better aligns with the high ratio of memory and constant instructions in the program.\"",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--newgvn",
+          "--bdce",
+          "--memcpyopt",
+          "--deadargelim",
+          "--prune-eh",
+          "--jump-threading",
+          "--ipsccp",
+          "--loop-interchange",
+          "--globaldce",
+          "--gvn-hoist",
+          "--strip-dead-prototypes",
+          "--called-value-propagation",
+          "--aggressive-instcombine",
+          "--rpo-functionattrs",
+          "--inline",
+          "--loop-unroll-and-jam",
+          "--instsimplify",
+          "--post-inline-ee-instrument",
+          "--loop-instsimplify",
+          "--coro-split",
+          "--mldst-motion"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 3,
+      "thought": "My refined search did not surpass the -Oz baseline, ending at +0.0%. My heuristics are exhausted. I must now resort to my knowledge base (RAG) to find a known-good sequence.",
+      "action": "USE_RAG",
+      "action_input": {
+        "query": "Find best sequence from knowledge base"
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    }
+  ],
+  "final_answer": {
+    "pass_sequence": [
+      "--mldst-motion",
+      "--mem2reg",
+      "--aggressive-instcombine",
+      "--ipsccp",
+      "--dce",
+      "--load-store-vectorizer",
+      "--instsimplify",
+      "--simplifycfg",
+      "--gvn-hoist",
+      "--slp-vectorizer",
+      "--lower-constant-intrinsics"
+    ],
+    "performance_vs_Oz": "+0.0%"
+  }
+}
