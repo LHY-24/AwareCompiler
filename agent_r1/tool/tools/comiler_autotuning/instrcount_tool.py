@@ -14,7 +14,7 @@ class InstrCountTool(Tool):
     """
     
     def __init__(self, llvm_tools_path=os.path.join(os.path.dirname(__file__), 'raw_tool'), 
-                llvm_ir_dir="/root/project/Compiler-R1/examples/data_preprocess/llvmir_datasets/"
+                llvm_ir_dir="/root/AwareCompiler/examples/data_preprocess/llvmir_datasets/"
                 ):
         """
         Initialize the tool for counting instructions in LLVM IR code
@@ -96,7 +96,7 @@ class InstrCountTool(Tool):
                     input_code,
                     optimization_flags,
                     llvm_tools_path=llvm_tools_path
-                )
+                ) * 100
                 result["improvement_over_oz"] = over_oz
             
             return json.dumps(result)

@@ -3,15 +3,15 @@ Specific tool implementations
 """
 
 from agent_r1.tool.tools.comiler_autotuning.instrcount_tool import InstrCountTool
-from agent_r1.tool.tools.comiler_autotuning.lightrag_knowledge_tool import LightRAGCompilerTool
+from agent_r1.tool.tools.comiler_autotuning.knowledge_tool import KnowledgeTool
 
 __all__ = [
     'InstrCountTool',
-    'LightRAGCompilerTool',
+    'KnowledgeTool',
 ] 
 
 def _default_tools(env):
     if env == 'optimizer':
-        return [InstrCountTool(), LightRAGCompilerTool()]
+        return [InstrCountTool(), KnowledgeTool()]
     else:
         raise NotImplementedError

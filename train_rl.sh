@@ -4,6 +4,7 @@ export CUDA_LAUNCH_BLOCKING=1
 export TORCH_USE_CUDA_DSA=1
 export HYDRA_FULL_ERROR=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+export PYTHONPATH=/root/AwareCompiler/verl/:$PYTHONPATH
 
 base_model="Qwen/Qwen2.5-1.5B-Instruct"
 sft_output_dir="./model_save/cold_start_model/1.5B/"
@@ -66,4 +67,4 @@ python3 -m agent_r1.src.main_agent \
   trainer.total_epochs=1 \
   \
   tool.env='optimizer' \
-  trainer.total_training_steps=50
+  trainer.total_training_steps=200

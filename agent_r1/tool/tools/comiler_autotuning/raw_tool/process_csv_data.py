@@ -28,7 +28,7 @@ def process_csv_file(csv_path: str, output_dir: str) -> None:
     
     # Process the data
     processed_data = []
-    base_path = "/root/project/Compiler-R1/examples/data_preprocess/llvmir_datasets/"
+    base_path = "/root/AwareCompiler/examples/data_preprocess/llvmir_datasets/"
     
     for index, row in df.iterrows():
         if index % 100 == 0:  # Progress indicator
@@ -493,17 +493,20 @@ Where:
     
     print(f"Created pass synergy markdown with {len(synerpairs)} synergy pairs")
 
+
 def main():
     """Main function to process the CSV file and create markdown files"""
     
-    csv_path = "/root/project/Compiler-R1/examples/data_preprocess/optimal_passsequence.csv"
-    output_dir = "/root/project/Compiler-R1/agent_r1/tool/tools/comiler_autotuning/knowledge_base"
+    # TODO: 修改路径
+    csv_path = "/root/AwareCompiler/examples/data_preprocess/optimal_passsequence.csv"
+    output_dir = "/root/AwareCompiler/knowledge_base"
     
     if not os.path.exists(csv_path):
         print(f"Error: CSV file not found at {csv_path}")
         return
     
     process_csv_file(csv_path, output_dir)
+
 
 if __name__ == "__main__":
     main() 

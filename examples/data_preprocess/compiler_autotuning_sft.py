@@ -15,10 +15,10 @@ import sys
 
 # Add path to import RAG tool
 sys.path.append('../../')
-from agent_r1.tool.tools.comiler_autotuning.lightrag_knowledge_tool import LightRAGCompilerTool
+from agent_r1.tool.tools.comiler_autotuning.knowledge_tool import KnowledgeTool
 
 # Initialize RAG tool
-rag_tool = LightRAGCompilerTool()
+rag_tool = KnowledgeTool()
 
 def read_json_file(file_path):
     """
@@ -37,6 +37,7 @@ def read_json_file(file_path):
         print(f"Error reading file {file_path}: {e}")
         return None
 
+
 def format_autophase_features(features):
     """
     Format autophase features as JSON string
@@ -48,6 +49,7 @@ def format_autophase_features(features):
         Formatted JSON string
     """
     return json.dumps(features, indent=2)
+
 
 def simulate_instrcount_tool(program_id, pass_sequence, improvement_over_oz):
     """
@@ -72,6 +74,7 @@ def simulate_instrcount_tool(program_id, pass_sequence, improvement_over_oz):
         "improvement_over_oz": improvement_value
     }
 
+
 def simulate_find_best_pass_sequence_tool(program_id, best_pass_sequence, improvement_percentage):
     """
     Simulate the find_best_pass_sequence_tool output
@@ -95,6 +98,7 @@ def simulate_find_best_pass_sequence_tool(program_id, best_pass_sequence, improv
         "best_pass_sequence": best_pass_sequence,
         "improvement_percentage": improvement_value
     }
+
 
 def generate_fast_thinking_success_data(json_data):
     """
@@ -155,7 +159,6 @@ When you invoke the instrcount tool, you must provide the {program_id} as the fi
     }
     tool_call_json = json.dumps(tool_call_dict, indent=2)
     
-    
     # Simulate tool call and response
     tool_response = simulate_instrcount_tool(program_id, turn1_pass_sequence, turn1_performance)
     
@@ -168,7 +171,6 @@ Looking at the autophase features, I can see:
 - Total blocks: {autophase_features.get('TotalBlocks', 'N/A')}
 - Memory instructions: {autophase_features.get('TotalMemInst', 'N/A')}
 - Branch count: {autophase_features.get('BranchCount', 'N/A')}
-
 Based on these characteristics, I'll formulate a strong initial optimization sequence. Let me call the instrcount tool to check the performance.
 </Intuition>
 
@@ -188,12 +190,10 @@ Based on these characteristics, I'll formulate a strong initial optimization seq
 Great! The instrcount tool reports an improvement_over_oz of {tool_response['improvement_over_oz']}%. It means the pass sequence provides better optimization than -Oz.
 </think>
 
-
 <answer>{json.dumps(turn1_pass_sequence)}</answer>
 
 <|im_end|>
 """
-    print(answer)
     return {
         'question': question,
         'answer': answer,
@@ -202,6 +202,7 @@ Great! The instrcount tool reports an improvement_over_oz of {tool_response['imp
         'performance': turn1_performance,
         'pass_sequence': turn1_pass_sequence
     }
+
 
 def generate_reflection_success_data(json_data):
     """
@@ -332,7 +333,6 @@ Excellent! After reflection, the refined sequence achieves an improvement_over_o
 
 <|im_end|>
 """
-    print(answer)
     return {
         'question': question,
         'answer': answer,
@@ -419,7 +419,7 @@ When you invoke the instrcount tool, you must provide the {program_id} as the fi
         "name": "lightrag_compiler_optimization",
         "arguments": {"query": question} # 直接传入原始 question 字符串
     }
-    rag_tool_call_json = json.dumps(rag_tool_call_dict, indent=2)
+    rag_tool_call_json = json.dumps(rag_tool_call_dict)
 
     # Simulate tool calls and responses
     tool_response1 = simulate_instrcount_tool(program_id, turn1_pass_sequence, turn1_performance)
@@ -517,7 +517,7 @@ Based on the RAG knowledge base retrieval, I can now provide a well-informed opt
 
 <|im_end|>
 """
-    print(answer)
+
     return {
         'question': question,
         'answer': answer,
