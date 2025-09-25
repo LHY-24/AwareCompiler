@@ -4,7 +4,7 @@ export CUDA_LAUNCH_BLOCKING=1
 export TORCH_USE_CUDA_DSA=1
 export HYDRA_FULL_ERROR=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-export PYTHONPATH=/root/Compiler-R1_1/verl/:$PYTHONPATH
+export PYTHONPATH=/PATH/verl/:$PYTHONPATH
 
 base_model="Qwen/Qwen2.5-3B-Instruct"
 sft_output_dir="./model_save/cold_start_model/3B/"

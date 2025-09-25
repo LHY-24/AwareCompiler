@@ -4,7 +4,7 @@ export CUDA_LAUNCH_BLOCKING=1
 export TORCH_USE_CUDA_DSA=1
 export HYDRA_FULL_ERROR=1
 export CUDA_VISIBLE_DEVICES=1,4,5,7
-export PYTHONPATH=/root/Compiler-R1_1/verl/:$PYTHONPATH
+export PYTHONPATH=/PATH/verl/:$PYTHONPATH
 
 base_model="Qwen/Qwen2.5-7B-Instruct"
 sft_output_dir="./model_save/cold_start_model/7B/"
@@ -14,7 +14,7 @@ sft_experiment_name="sft-$(basename $base_model)"
 grpo_experiment_name="grpo-after-sft-$(basename $base_model)"
 
 # Check if SFT checkpoint exists
-latest_checkpoint=/root/Compiler-R1_1/model_save/cold_start_model/7B/global_step_250
+latest_checkpoint=/PATH/model_save/cold_start_model/7B/global_step_250
 echo "latest_checkpoint: $latest_checkpoint"
 
 

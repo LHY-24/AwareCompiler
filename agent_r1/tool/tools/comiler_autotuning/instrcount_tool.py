@@ -34,7 +34,7 @@ class InstrCountTool(Tool):
                     "type": "string",
                     "description": (
                         "The exact name of the LLVM IR file to analyze. "
-                        "This file must exist in the directory: /root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/. "
+                        "This file must exist in the directory: /PATH/examples/data_preprocess/llvmir_datasets/. "
                         "Example: 'test.ll'"
                     )
                 },

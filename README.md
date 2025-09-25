@@ -45,12 +45,17 @@ bash train_rl.sh
 
 After training your models, follow these steps for inference:
 
-1.  **Merge model weights and VLLM server:**
+1.  **Merge model weights:**
 ```bash
 bash infer_model_merge.sh
+```
+
+2.  **Deploy the vLLM Service:**
+```bash
 bash infer_vllm_serve.sh
 ```
-2.  **Run inference:**
+
+3.  **Run inference:**
 ```bash
 bash infer_run.sh
 ```

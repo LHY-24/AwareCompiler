@@ -5,8 +5,8 @@ export CUDA_VISIBLE_DEVICES=0,1
 PYTHON_SCRIPT="agent_r1.vllm_infer.chat"
 DATA_DIR="./dataset/rl/"
 OUTPUT_FILE="overoz_summary_with_rate.txt" # Changed output filename
-LLVM_IR_DIR="/root/project/Compiler-R1/examples/data_preprocess/llvmir_datasets"
-LLVM_TOOLS_PATH="/root/project/Compiler-R1/agent_r1/tool/tools/comiler_autotuning/raw_tool/"
+LLVM_IR_DIR="/PATH/examples/data_preprocess/llvmir_datasets"
+LLVM_TOOLS_PATH="/PATH/agent_r1/tool/tools/comiler_autotuning/raw_tool/"
 
 declare -a DATASETS=(
     "rl_validation_cbench-v1.parquet"

@@ -1,4 +1,4 @@
-export PYTHONPATH=/root/Compiler-R1_1/verl/:$PYTHONPATH
+export PYTHONPATH=/PATH/verl/:$PYTHONPATH
 
 torchrun --standalone --nnodes=1 --nproc_per_node=8 \
   -m verl.trainer.fsdp_sft_trainer \

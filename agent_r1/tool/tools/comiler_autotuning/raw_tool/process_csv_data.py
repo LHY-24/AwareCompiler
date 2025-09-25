@@ -28,7 +28,7 @@ def process_csv_file(csv_path: str, output_dir: str) -> None:
     
     # Process the data
     processed_data = []
-    base_path = "/root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/"
+    base_path = "/PATH/examples/data_preprocess/llvmir_datasets/"
     
     for index, row in df.iterrows():
         if index % 100 == 0:  # Progress indicator
@@ -498,8 +498,8 @@ def main():
     """Main function to process the CSV file and create markdown files"""
     
     # TODO: 修改路径
-    csv_path = "/root/Compiler-R1_1/examples/data_preprocess/optimal_passsequence.csv"
-    output_dir = "/root/Compiler-R1_1/knowledge_base"
+    csv_path = "/PATH/examples/data_preprocess/optimal_passsequence.csv"
+    output_dir = "/PATH/knowledge_base"
     
     if not os.path.exists(csv_path):
         print(f"Error: CSV file not found at {csv_path}")

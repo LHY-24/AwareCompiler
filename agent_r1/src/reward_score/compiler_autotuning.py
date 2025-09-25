@@ -274,7 +274,7 @@ Based on the high memory instruction count, I'll prioritize -mem2reg and -licm o
 </tool_call><|im_end|>
 <|im_start|>user
 <tool_response>
-{"filename": "/root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/tensorflow-v0_1606.ll", "status": "success", "improvement_over_oz": -0.12376237623762376}
+{"filename": "/PATH/examples/data_preprocess/llvmir_datasets/tensorflow-v0_1606.ll", "status": "success", "improvement_over_oz": -0.12376237623762376}
 </tool_response><|im_end|>
 <|im_start|>assistant
 <think>
@@ -290,7 +290,7 @@ My initial attempt yielded a performance_over_oz of -0.12%. After reflecting, I 
 </tool_call><|im_end|>
 <|im_start|>user
 <tool_response>
-{"filename": "/root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/tensorflow-v0_1606.ll", "status": "success", "improvement_over_oz": -4.207920792079208}
+{"filename": "/PATH/examples/data_preprocess/llvmir_datasets/tensorflow-v0_1606.ll", "status": "success", "improvement_over_oz": -4.207920792079208}
 </tool_response><|im_end|>
 <|im_start|>assistant
 <think>
@@ -383,7 +383,7 @@ Given the high number of memory instructions and blocks, I will prioritize memor
 <|im_start|>user
 <tool_response>
 {
-  "filename": "/root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/example_program.ll",
+  "filename": "/PATH/examples/data_preprocess/llvmir_datasets/example_program.ll",
   "status": "success",
   "improvement_over_oz": -0.05
 }
@@ -435,7 +435,7 @@ I will verify the recommended pass sequence from the knowledge base using the in
 <|im_start|>user
 <tool_response>
 {
-  "filename": "/root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/example_program.ll",
+  "filename": "/PATH/examples/data_preprocess/llvmir_datasets/example_program.ll",
   "status": "success",
   "improvement_over_oz": 0.42
 }
