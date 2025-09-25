@@ -14,11 +14,14 @@ import glob
 import sys
 
 # Add path to import RAG tool
+
 sys.path.append('../../')
-from agent_r1.tool.tools.comiler_autotuning.lightrag_knowledge_tool import LightRAGCompilerTool
+sys.path.append('../../verl/verl/utils')
+from agent_r1.tool.tools.comiler_autotuning.knowledge_tool import KnowledgeTool
 
 # Initialize RAG tool
-rag_tool = LightRAGCompilerTool()
+rag_tool = KnowledgeTool()
+
 
 def read_json_file(file_path):
     """
@@ -37,6 +40,7 @@ def read_json_file(file_path):
         print(f"Error reading file {file_path}: {e}")
         return None
 
+
 def format_autophase_features(features):
     """
     Format autophase features as JSON string
@@ -48,6 +52,7 @@ def format_autophase_features(features):
         Formatted JSON string
     """
     return json.dumps(features, indent=2)
+
 
 def simulate_instrcount_tool(program_id, pass_sequence, improvement_over_oz):
     """
@@ -72,6 +77,7 @@ def simulate_instrcount_tool(program_id, pass_sequence, improvement_over_oz):
         "improvement_over_oz": improvement_value
     }
 
+
 def simulate_find_best_pass_sequence_tool(program_id, best_pass_sequence, improvement_percentage):
     """
     Simulate the find_best_pass_sequence_tool output
@@ -95,6 +101,7 @@ def simulate_find_best_pass_sequence_tool(program_id, best_pass_sequence, improv
         "best_pass_sequence": best_pass_sequence,
         "improvement_percentage": improvement_value
     }
+
 
 def generate_fast_thinking_success_data(json_data):
     """
@@ -123,14 +130,11 @@ Initial instruction count: {autophase_features.get('TotalInsts', 'N/A')}
 
 Your task is to analyze the program characteristics and provide an optimal pass sequence to minimize instruction count compared to the default -Oz optimization.
 
-Please follow this workflow:
-1. First, analyze the autophase features based on your experience and intuition to derive an initial pass sequence
-2. Call the instrcount tool to check the performance of this sequence
-3. If the performance is good (better than -Oz), output the answer directly
-4. If the performance is not good, reflect and derive a new pass sequence
-5. Call the instrcount tool again to check the performance of the refined sequence
-6. If the performance is good, output the answer directly
-7. If the performance is still not good, call the lightrag_compiler_optimization tool and use its result as the final answer
+1. First, analyze the autophase features and describe your intuition in <Intuition> tags. Propose your own initial pass sequence based on your expertise.
+2. Call the lightrag_compiler_optimization tool to retrieve a recommended pass sequence from the knowledge base.
+3. Compare your own sequence and the lightrag_compiler_optimization tool's result by calling the instrcount tool. 
+4. You may choose to use your own, the RAG's, or a combination, and explain your reasoning in <Reflection> tags.
+5. Output the final pass sequence in <answer> tags (e.g., ["--mem2reg", "--instcombine", "--simplifycfg"]).
 
 Requirements:
 - Use <Intuition> tags to wrap your initial analysis of the autophase features
@@ -155,7 +159,6 @@ When you invoke the instrcount tool, you must provide the {program_id} as the fi
     }
     tool_call_json = json.dumps(tool_call_dict, indent=2)
     
-    
     # Simulate tool call and response
     tool_response = simulate_instrcount_tool(program_id, turn1_pass_sequence, turn1_performance)
     
@@ -168,7 +171,6 @@ Looking at the autophase features, I can see:
 - Total blocks: {autophase_features.get('TotalBlocks', 'N/A')}
 - Memory instructions: {autophase_features.get('TotalMemInst', 'N/A')}
 - Branch count: {autophase_features.get('BranchCount', 'N/A')}
-
 Based on these characteristics, I'll formulate a strong initial optimization sequence. Let me call the instrcount tool to check the performance.
 </Intuition>
 
@@ -188,12 +190,10 @@ Based on these characteristics, I'll formulate a strong initial optimization seq
 Great! The instrcount tool reports an improvement_over_oz of {tool_response['improvement_over_oz']}%. It means the pass sequence provides better optimization than -Oz.
 </think>
 
-
 <answer>{json.dumps(turn1_pass_sequence)}</answer>
 
 <|im_end|>
 """
-    print(answer)
     return {
         'question': question,
         'answer': answer,
@@ -202,6 +202,7 @@ Great! The instrcount tool reports an improvement_over_oz of {tool_response['imp
         'performance': turn1_performance,
         'pass_sequence': turn1_pass_sequence
     }
+
 
 def generate_reflection_success_data(json_data):
     """
@@ -332,7 +333,6 @@ Excellent! After reflection, the refined sequence achieves an improvement_over_o
 
 <|im_end|>
 """
-    print(answer)
     return {
         'question': question,
         'answer': answer,
@@ -341,6 +341,7 @@ Excellent! After reflection, the refined sequence achieves an improvement_over_o
         'performance': turn2_performance,
         'pass_sequence': turn2_pass_sequence
     }
+
 
 def generate_rag_fallback_data(json_data):
     """
@@ -360,42 +361,44 @@ def generate_rag_fallback_data(json_data):
     formatted_features = format_autophase_features(autophase_features)
     
     # Build question
-    question = f"""Act as a compiler optimization expert finding an optimal pass sequence for LLVM IR, aiming to reduce the total instruction count.
-The LLVM IR code is represented by autophase features, the initial autophase features are:
+    question = f"""You are a compiler optimization expert. Your goal is to find an optimal LLVM pass sequence that minimizes the total instruction count for the given program.
+
+The program's LLVM IR is summarized by autophase features:
 ```json
 {formatted_features}
 ```
 Initial instruction count: {autophase_features.get('TotalInsts', 'N/A')}
 
-Your task is to analyze the program characteristics and provide an optimal pass sequence to minimize instruction count compared to the default -Oz optimization.
-
-Please follow this workflow:
-1. First, analyze the autophase features based on your experience and intuition to derive an initial pass sequence
-2. Call the instrcount tool to check the performance of this sequence
-3. If the performance is good (better than -Oz), output the answer directly
-4. If the performance is not good, reflect and derive a new pass sequence
-5. Call the instrcount tool again to check the performance of the refined sequence
-6. If the performance is good, output the answer directly
-7. If the performance is still not good, call the lightrag_compiler_optimization tool and use its result as the final answer
+Your workflow:
+1. <think>: Analyze the autophase features and explain your reasoning about which passes may be effective.
+2. <tool_call>: Use lightrag_compiler_optimization tool to retrieve a recommended pass sequence from the knowledge base. Show response in <tool_response>.
+3. <tool_call>: Use instrcount tool to verify the recommended pass sequence. Show response in <tool_response>.
+4. Interpret instrcount result: positive improvement_over_oz means the optimization is successful, negative means it is not. Adjust your strategy accordingly.
+5. Do NOT simply copy the pass sequence returned by lightrag_compiler_optimization. Instead, use it as a reference, and further reason, refine, or combine with your own analysis to propose an even better pass sequence. Your final answer should reflect your own optimization expertise and improvements over the baseline.
+6. Always end with <answer> tags containing only your final recommended pass sequence, nothing else.
 
 Requirements:
-- Use <Intuition> tags to wrap your initial analysis of the autophase features
-- Use <Reflection> tags if you need to reflect after getting poor results
-- Use <tool_call> and <tool_response> tags for tool interactions
-- Always end with <answer> tags containing the final pass sequence in list format (e.g., ["--mem2reg", "--instcombine", "--simplifycfg"])
+- Use <think>, <tool_call>, <tool_response>, <answer> tags as above.
+- You MUST output the final pass sequence in <answer> tags, formatted as a JSON list.
+- When invoking the instrcount tool, use {program_id} as the filename and your chosen optimization_flags.
 
-When you invoke the instrcount tool, you must provide the {program_id} as the filename and the optimization flags as the optimization_flags.
+Example output format: <|im_start|>assistant <think> Analyzing the autophase features, I notice a high number of memory instructions and branches. I will prioritize memory and control-flow optimizations. </think>
+<tool_call> {{"name": "lightrag_compiler_optimization", "arguments": {{"query": "{formatted_features}"}}}} </tool_call> <|im_end|>
+
+<|im_start|>user <tool_response> {{"recommended_pass_sequence": ["--inferattrs", "--dse", "--mldst-motion", "--mergefunc", "--instsimplify", "--correlated-propagation", "--slp-vectorizer", "--early-cse-memssa", "--gvn", "--load-store-vectorizer", "--adce", "--gvn-hoist", "--die", "--loop-simplifycfg", "--sroa", "--reassociate", "--lower-constant-intrinsics", "--newgvn", "--simplifycfg"], "performance_improvement": 0.42}} </tool_response> <|im_end|>
+
+<|im_start|>assistant <think> I will verify the recommended sequence using the instrcount tool. </think>
+
+<tool_call> {{"name": "instrcount", "arguments": {{"filename": "{program_id}", "optimization_flags": ["--inferattrs", "--dse", "--mldst-motion", "--mergefunc", "--instsimplify", "--correlated-propagation", "--slp-vectorizer", "--early-cse-memssa", "--gvn", "--load-store-vectorizer", "--adce", "--gvn-hoist", "--die", "--loop-simplifycfg", "--sroa", "--reassociate", "--lower-constant-intrinsics", "--newgvn", "--simplifycfg"]}}}} </tool_call> <|im_end|> 
+<|im_start|>user <tool_response> {{"status": "success", "improvement_over_oz": 0.42}} </tool_response> <|im_end|>
+
+<|im_start|>assistant <answer>["--inferattrs", "--dse", "--mldst-motion", "--mergefunc", "--instsimplify", "--correlated-propagation", "--slp-vectorizer", "--early-cse-memssa", "--gvn", "--load-store-vectorizer", "--adce", "--gvn-hoist", "--die", "--loop-simplifycfg", "--sroa", "--reassociate", "--lower-constant-intrinsics", "--newgvn", "--simplifycfg"]</answer> <|im_end|> 
 """
     
     # Extract trajectory data
     turn1 = trajectory[0]
     turn1_pass_sequence = turn1['action_input']['pass_sequence']
     turn1_performance = turn1['observation']['performance_vs_Oz']
-    
-    turn2 = trajectory[1]
-    turn2_thought = turn2['thought']
-    turn2_pass_sequence = turn2['action_input']['pass_sequence']
-    turn2_performance = turn2['observation']['performance_vs_Oz']
 
     tool_call_dict = {
         "name": "instrcount",
@@ -406,24 +409,15 @@ When you invoke the instrcount tool, you must provide the {program_id} as the fi
     }
     tool_call_json1 = json.dumps(tool_call_dict, indent=2)
 
-    tool_call_dict2 = {
-        "name": "instrcount",
-        "arguments": {
-            "filename": program_id,
-            "optimization_flags": turn2_pass_sequence
-        }
-    }
-    tool_call_json2 = json.dumps(tool_call_dict2, indent=2)
-
     rag_tool_call_dict = {
         "name": "lightrag_compiler_optimization",
-        "arguments": {"query": question} # 直接传入原始 question 字符串
+        "arguments": {"query": question}    # 直接传入原始 question 字符串
     }
-    rag_tool_call_json = json.dumps(rag_tool_call_dict, indent=2)
+    rag_tool_call_json = json.dumps(rag_tool_call_dict)
 
     # Simulate tool calls and responses
     tool_response1 = simulate_instrcount_tool(program_id, turn1_pass_sequence, turn1_performance)
-    tool_response2 = simulate_instrcount_tool(program_id, turn2_pass_sequence, turn2_performance)
+    # tool_response2 = simulate_instrcount_tool(program_id, turn2_pass_sequence, turn2_performance)
     
     # Actually call RAG tool to get enhanced prompt
     try:
@@ -435,7 +429,7 @@ When you invoke the instrcount tool, you must provide the {program_id} as the fi
         # If RAG tool doesn't return valid pass sequence, use final_answer from original data
         if not final_pass_sequence:
             final_answer = json_data.get('final_answer', {})
-            final_pass_sequence = final_answer.get('pass_sequence', ["--mem2reg", "--instcombine", "--simplifycfg"])
+            final_pass_sequence = final_answer.get('pass_sequence', ["-Oz"]) # 从["--mem2reg", "--instcombine", "--simplifycfg"]到"-Oz""
             
         # Get performance information
         final_performance = json_data.get('final_answer', {}).get('performance_vs_Oz', 'N/A')
@@ -445,21 +439,20 @@ When you invoke the instrcount tool, you must provide the {program_id} as the fi
         # Use fallback
         rag_enhanced_prompt = "RAG tool is temporarily unavailable. Please use general compiler optimization strategies."
         final_answer = json_data.get('final_answer', {})
-        final_pass_sequence = final_answer.get('pass_sequence', ["--mem2reg", "--instcombine", "--simplifycfg"])
+        final_pass_sequence = final_answer.get('pass_sequence', ["-Oz"]) # 从["--mem2reg", "--instcombine", "--simplifycfg"]到"-Oz""
         final_performance = final_answer.get('performance_vs_Oz', 'N/A')
     
     # Generate answer with RAG fallback
     answer = f"""
 <|im_start|>assistant
-<Intuition>
-Looking at the autophase features, I can see:
+<think>
+Analyzing the autophase features:
 - Total instructions: {autophase_features.get('TotalInsts', 'N/A')}
 - Total blocks: {autophase_features.get('TotalBlocks', 'N/A')}
 - Memory instructions: {autophase_features.get('TotalMemInst', 'N/A')}
 - Branch count: {autophase_features.get('BranchCount', 'N/A')}
-
-Based on these characteristics, I'll formulate a strong initial optimization sequence. Let me call the instrcount tool to check the performance.
-</Intuition>
+I will first try an initial optimization sequence and use the instrcount tool to verify its effectiveness.
+</think>
 
 <tool_call>
 {tool_call_json1}
@@ -474,27 +467,7 @@ Based on these characteristics, I'll formulate a strong initial optimization seq
 
 <|im_start|>assistant
 <think>
-The instrcount tool reports an improvement_over_oz of {tool_response1['improvement_over_oz']}%. Since this is not better than -Oz, let me reflect on this result.
-</think>
-
-<Reflection>
-{turn2_thought} Let me try a refined approach with a different pass sequence.
-</Reflection>
-
-<tool_call>
-{tool_call_json2}
-</tool_call>
-<|im_end|>
-
-<|im_start|>user
-<tool_response>
-{json.dumps(tool_response2, indent=2)}
-</tool_response>
-<|im_end|>
-
-<|im_start|>assistant
-<think>
-The refined sequence still achieves an improvement_over_oz of {tool_response2['improvement_over_oz']}%, which is still not better than -Oz. My heuristics are exhausted. I must now resort to my knowledge base (RAG) to find a known-good sequence.
+The initial sequence did not outperform -Oz. I will now consult the knowledge base using the lightrag_compiler_optimization tool.
 </think>
 
 <tool_call>
@@ -510,14 +483,35 @@ The refined sequence still achieves an improvement_over_oz of {tool_response2['i
 
 <|im_start|>assistant
 <think>
-Based on the RAG knowledge base retrieval, I can now provide a well-informed optimization sequence.
+I will verify the recommended sequence from the knowledge base using the instrcount tool.
+</think>
+
+<tool_call>
+{json.dumps({
+    "name": "instrcount",
+    "arguments": {
+        "filename": program_id,
+        "optimization_flags": final_pass_sequence
+    }
+}, indent=2)}
+</tool_call>
+<|im_end|>
+
+<|im_start|>user
+<tool_response>
+{json.dumps(simulate_instrcount_tool(program_id, final_pass_sequence, final_performance), indent=2)}
+</tool_response>
+<|im_end|>
+
+<|im_start|>assistant
+<think>
+The recommended sequence from the knowledge base shows improvement over -Oz. I will use it as the final answer.
 </think>
 
 <answer>{json.dumps(final_pass_sequence)}</answer>
-
 <|im_end|>
 """
-    print(answer)
+
     return {
         'question': question,
         'answer': answer,
@@ -526,6 +520,7 @@ Based on the RAG knowledge base retrieval, I can now provide a well-informed opt
         'performance': final_performance,
         'pass_sequence': final_pass_sequence
     }
+
 
 def determine_scenario(json_data):
     """
@@ -540,19 +535,15 @@ def determine_scenario(json_data):
     trajectory = json_data['trajectory']
     
     # Check if turn1 is BetterThanOz (negative improvement_over_oz)
-    if len(trajectory) >= 1:
-        turn1_status = trajectory[0]['observation']['status']
-        if turn1_status == 'BetterThanOz':
-            return 'fast_thinking_success'
+    # if len(trajectory) >= 1:
+    #     turn1_status = trajectory[0]['observation']['status']
+    #     if turn1_status == 'BetterThanOz':
+    #         return 'fast_thinking_success'
     
     # Check if turn2 is BetterThanOz
-    if len(trajectory) >= 2:
-        turn2_status = trajectory[1]['observation']['status']
-        if turn2_status == 'BetterThanOz':
-            return 'reflection_success'
-    
-    # If both turns are WorseThanOz, use RAG fallback
-    return 'rag_fallback'
+    if len(trajectory) == 3:
+        return 'rag_fallback'
+
 
 def process_json_file(file_path):
     """
@@ -572,12 +563,8 @@ def process_json_file(file_path):
     scenario = determine_scenario(json_data)
     
     # Generate data based on scenario
-    if scenario == 'fast_thinking_success':
-        return generate_fast_thinking_success_data(json_data)
-    elif scenario == 'reflection_success':
-        return generate_reflection_success_data(json_data)
-    else:
-        return generate_rag_fallback_data(json_data)
+    return generate_rag_fallback_data(json_data)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -592,7 +579,7 @@ def main():
                         help='Random seed for data splitting')
     parser.add_argument('--show_examples', action='store_true',
                         help='Show examples of different scenarios')
-    parser.add_argument('--max_per_scenario', type=int, default=360,
+    parser.add_argument('--max_per_scenario', type=int, default=500,
                         help='Maximum number of samples per scenario to balance the dataset')
 
     args = parser.parse_args()
@@ -667,7 +654,7 @@ def main():
     
     if args.show_examples:
         print("\n=== EXAMPLES ===")
-        for scenario in ['fast_thinking_success', 'reflection_success', 'rag_fallback']:
+        for scenario in ['rag_fallback']:
             examples = [r for r in data_records if r['scenario'] == scenario]
             if examples:
                 print(f"\n--- {scenario.upper()} EXAMPLE ---")
@@ -680,7 +667,6 @@ def main():
     
     # Create dataset (all as training data)
     train_dataset = datasets.Dataset.from_pandas(pd.DataFrame(data_records))
-    
     print(f"Dataset: {len(train_dataset)} training samples")
     
     # Format for SFT
@@ -697,12 +683,11 @@ def main():
             "performance": example["performance"]
         }
     
+    # Save processed dataset
     train_dataset = train_dataset.map(process_for_sft)
-    
-    # Save dataset
-    train_dataset.to_parquet(os.path.join(output_dir, 'train.parquet'))
-    
+    train_dataset.to_parquet(os.path.join(output_dir, 'train.parquet'))    
     print(f"Saved processed dataset to {output_dir}")
+
 
 if __name__ == '__main__':
     main() 

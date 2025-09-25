@@ -28,6 +28,11 @@ from verl.utils.hdfs_io import copy, makedirs
 import glob
 from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_autophase import get_autophase_obs
 
+import sys
+sys.path.append('../../')
+sys.path.append('../../verl/verl/utils')
+
+
 def read_json_file(file_path):
     """
     Read JSON file from meta_dataset directory
@@ -44,6 +49,7 @@ def read_json_file(file_path):
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
         return None
+
 
 def read_llvm_ir_file(file_path):
     """
@@ -62,6 +68,7 @@ def read_llvm_ir_file(file_path):
         print(f"Error reading file {file_path}: {e}")
         return None
 
+
 def get_autophase_features(ll_code):
     """
     Get autophase features from LLVM IR code
@@ -79,6 +86,7 @@ def get_autophase_features(ll_code):
         print(f"Error getting autophase features: {e}")
         return None
 
+
 def format_autophase_features(features):
     """
     Format autophase features as JSON string
@@ -90,6 +98,7 @@ def format_autophase_features(features):
         Formatted JSON string
     """
     return json.dumps(features, indent=2)
+
 
 def generate_rl_question(autophase_features, filename):
     """
@@ -105,34 +114,118 @@ def generate_rl_question(autophase_features, filename):
     formatted_features = format_autophase_features(autophase_features)
     
     # Build question
-    question = f"""Act as a compiler optimization expert finding an optimal pass sequence for LLVM IR, aiming to reduce the total instruction count.
-The LLVM IR code is represented by autophase features, the initial autophase features are:
-```json
-{formatted_features}
-```
-Initial instruction count: {autophase_features.get('TotalInsts', 'N/A')}
-
-Your task is to analyze the program characteristics and provide an optimal pass sequence to minimize instruction count compared to the default -Oz optimization.
-
-Please follow this workflow:
-1. First, analyze the autophase features based on your experience and intuition to derive an initial pass sequence
-2. Call the instrcount tool to check the performance of this sequence
-3. If the performance is good (better than -Oz), output the answer directly
-4. If the performance is not good, reflect and derive a new pass sequence
-5. Call the instrcount tool again to check the performance of the refined sequence
-6. If the performance is good, output the answer directly
-7. If the performance is still not good, call the lightrag_compiler_optimization tool and use its result as the final answer
-
-Requirements:
-- Use <Intuition> tags to wrap your initial analysis of the autophase features
-- Use <Reflection> tags if you need to reflect after getting poor results
-- Use <tool_call> and <tool_response> tags for tool interactions
-- Always end with <answer> tags containing the final pass sequence in list format (e.g., ["--mem2reg", "--instcombine", "--simplifycfg"])
-
-When you invoke the instrcount tool, you must provide the {filename} as the filename and the optimization flags as the optimization_flags.
-"""
+    question = (
+    "You are a compiler optimization expert. Your goal is to find an optimal LLVM pass sequence that minimizes the total instruction count for the given program.\n"
+    "The program's LLVM IR is summarized by autophase features:\n"
+    "```json\n"
+    + formatted_features +
+    "\n```\n"
+    "Initial instruction count: " + str(autophase_features.get('TotalInsts', 'N/A')) + "\n"
+    "Your workflow:\n"
+    "1. In <think> tags, analyze the autophase features and explain your reasoning about which passes may be effective.\n"
+    "2. Use the lightrag_compiler_optimization tool to retrieve a recommended pass sequence from the knowledge base. Show the tool response in <tool_response> tags.\n"
+    "3. Use the instrcount tool to verify the recommended pass sequence from lightrag_compiler_optimization. Show the tool call and response.\n"
+    "4. Carefully interpret the instrcount tool's result: a positive value for improvement_over_oz means the optimization is effective, while a negative value indicates the pass sequence is less effective than -Oz (negative optimization). You should be able to distinguish and respond accordingly.\n"
+    "5. Do NOT simply copy the pass sequence returned by lightrag_compiler_optimization. Instead, use it as a reference, and further reason, refine, or combine with your own analysis to propose an even better pass sequence. Your final answer should reflect your own optimization expertise and improvements over the baseline.\n"
+    "6. Always end with <answer> tags containing your final recommended pass sequence.\n"
+    "\nRequirements:\n"
+    "- Always use <think> tags for your initial analysis.\n"
+    "- Always use <tool_call> and <tool_response> tags for tool interactions.\n"
+    f"- When invoking the instrcount tool, use {filename} as the filename and your chosen optimization_flags as the tool's parameters.\n"
+    "- You MUST output the final pass sequence in <answer> tags, formatted as a JSON list.\n"
+    "- The <answer> tag should only contain the pass sequence, nothing else.\n"
+    "- If you do not output <answer> with a valid JSON list, you will receive zero reward.\n"
+    "- If your first attempt does not improve over -Oz, reflect in <think> and try a new sequence, or consult the knowledge base again.\n"
+    "- Do not include any explanation, text, or comments in <answer>. Only output the pass sequence as a JSON list.\n"
+    "- Your reward is based on both format correctness and optimization effectiveness. Missing <answer> or incorrect format will result in zero reward.\n"
+    "\nAdditional notes:\n"
+    "- When interpreting instrcount results, remember: positive improvement_over_oz means the optimization is successful, negative means it is not. Adjust your strategy accordingly.\n"
+    "- Your final answer should be the result of your own reasoning and refinement, not a direct copy of the tool's output.\n"
+    "\nExample output format:\n"
+    "<|im_start|>assistant\n"
+    "<think>\n"
+    "Analyzing the autophase features:\n"
+    "- Total instructions: 1200\n"
+    "- Total blocks: 200\n"
+    "- Memory instructions: 800\n"
+    "- Branch count: 150\n"
+    "Given the high number of memory instructions and blocks, I will prioritize memory and control-flow optimizations. Let me try an initial pass sequence and use the instrcount tool to check its effectiveness.\n"
+    "</think>\n\n"
+    "<tool_call>\n"
+    "{\n"
+    "  \"name\": \"instrcount\",\n"
+    "  \"arguments\": {\n"
+    "    \"filename\": \"example_program.ll\",\n"
+    "    \"optimization_flags\": [\"--mem2reg\", \"--instcombine\", \"--simplifycfg\", \"--gvn\", \"--dce\"]\n"
+    "  }\n"
+    "}\n"
+    "</tool_call>\n"
+    "<|im_end|>\n\n"
+    "<|im_start|>user\n"
+    "<tool_response>\n"
+    "{\n"
+    "  \"filename\": \"/PATH/example_program.ll\",\n"
+    "  \"status\": \"success\",\n"
+    "  \"improvement_over_oz\": -0.05\n"
+    "}\n"
+    "</tool_response>\n"
+    "<|im_end|>\n\n"
+    "<|im_start|>assistant\n"
+    "<think>\n"
+    "The instrcount tool reports an improvement_over_oz of -0.05, which is not better than -Oz. I will consult the knowledge base using the lightrag_compiler_optimization tool.\n"
+    "</think>\n\n"
+    "<tool_call>\n"
+    "{\n"
+    "  \"name\": \"lightrag_compiler_optimization\",\n"
+    "  \"arguments\": {\n"
+    "    \"query\": \"Autophase features: TotalInsts=1200, TotalBlocks=200, TotalMemInst=800, BranchCount=150\"\n"
+    "  }\n"
+    "}\n"
+    "</tool_call>\n"
+    "<|im_end|>\n\n"
+    "<|im_start|>user\n"
+    "<tool_response>\n"
+    "Based on the knowledge base, the recommended pass sequence is:\n"
+    "**Optimal Pass Sequence for this Program:**\n"
+    "```json\n"
+    "[\"--inferattrs\", \"--dse\", \"--mldst-motion\", \"--mergefunc\", \"--instsimplify\", \"--correlated-propagation\", \"--slp-vectorizer\", \"--early-cse-memssa\", \"--gvn\", \"--load-store-vectorizer\", \"--adce\", \"--gvn-hoist\", \"--die\", \"--loop-simplifycfg\", \"--sroa\", \"--reassociate\", \"--lower-constant-intrinsics\", \"--newgvn\", \"--simplifycfg\"]\n"
+    "```\n"
+    "Performance Improvement (OverOz): 0.42\n"
+    "</tool_response>\n"
+    "<|im_end|>\n\n"
+    "<|im_start|>assistant\n"
+    "<think>\n"
+    "I will verify the recommended pass sequence from the knowledge base using the instrcount tool.\n"
+    "</think>\n\n"
+    "<tool_call>\n"
+    "{\n"
+    "  \"name\": \"instrcount\",\n"
+    "  \"arguments\": {\n"
+    "    \"filename\": \"example_program.ll\",\n"
+    "    \"optimization_flags\": [\"--inferattrs\", \"--dse\", \"--mldst-motion\", \"--mergefunc\", \"--instsimplify\", \"--correlated-propagation\", \"--slp-vectorizer\", \"--early-cse-memssa\", \"--gvn\", \"--load-store-vectorizer\", \"--adce\", \"--gvn-hoist\", \"--die\", \"--loop-simplifycfg\", \"--sroa\", \"--reassociate\", \"--lower-constant-intrinsics\", \"--newgvn\", \"--simplifycfg\"]\n"
+    "  }\n"
+    "}\n"
+    "</tool_call>\n"
+    "<|im_end|>\n\n"
+    "<|im_start|>user\n"
+    "<tool_response>\n"
+    "{\n"
+    "  \"filename\": \"/PATH/example_program.ll\",\n"
+    "  \"status\": \"success\",\n"
+    "  \"improvement_over_oz\": 0.42\n"
+    "}\n"
+    "</tool_response>\n"
+    "<|im_end|>\n\n"
+    "<|im_start|>assistant\n"
+    "<think>\n"
+    "The recommended sequence from the knowledge base shows improvement over -Oz. I will use it as the final answer.\n"
+    "</think>\n\n"
+    "<answer>[\"--inferattrs\", \"--dse\", \"--mldst-motion\", \"--mergefunc\", \"--instsimplify\", \"--correlated-propagation\", \"--slp-vectorizer\", \"--early-cse-memssa\", \"--gvn\", \"--load-store-vectorizer\", \"--adce\", \"--gvn-hoist\", \"--die\", \"--loop-simplifycfg\", \"--sroa\", \"--reassociate\", \"--lower-constant-intrinsics\", \"--newgvn\", \"--simplifycfg\"]</answer>\n"
+    "<|im_end|>\n"
+)
     
     return question
+
 
 def process_json_file(file_path):
     """
@@ -161,6 +254,7 @@ def process_json_file(file_path):
     except Exception as e:
         print(f"Error processing {file_path}: {e}")
         return None
+
 
 def process_ll_file(file_path):
     """
@@ -194,6 +288,7 @@ def process_ll_file(file_path):
     except Exception as e:
         print(f"Error processing {file_path}: {e}")
         return None
+
 
 def process_validation_datasets(llvm_ir_dir, max_samples_per_val=None):
     """
@@ -244,6 +339,7 @@ def process_validation_datasets(llvm_ir_dir, max_samples_per_val=None):
             print(f"Generated {len(val_records)} records for validation dataset {subdir}")
     
     return validation_datasets
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -360,6 +456,7 @@ def main():
         print(f"\nProcessed {len(validation_datasets)} validation datasets")
     else:
         print("Skipped validation dataset processing")
+
 
 if __name__ == '__main__':
     main() 

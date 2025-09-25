@@ -56,7 +56,7 @@ def get_overOz(ll_code: Optional[str], opt_flags: List[str], llvm_tools_path: Op
         # Note: get_instrcount needs to handle an empty list `valid_opt_flags` gracefully
 
         ic_value_result = get_instrcount(ll_code, valid_opt_flags, llvm_tools_path=llvm_tools_path)
-        oz_value_result = get_instrcount(ll_code, ["-Oz"], llvm_tools_path=llvm_tools_path)
+        oz_value_result = get_instrcount(ll_code, [" "], llvm_tools_path=llvm_tools_path)
 
         if oz_value_result is None or ic_value_result is None: return None
         ic_value = ic_value_result.get('ic') if isinstance(ic_value_result, dict) else ic_value_result

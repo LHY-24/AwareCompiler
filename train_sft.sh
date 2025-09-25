@@ -1,3 +1,5 @@
+export PYTHONPATH=/root/Compiler-R1_1/verl/:$PYTHONPATH
+
 torchrun --standalone --nnodes=1 --nproc_per_node=8 \
   -m verl.trainer.fsdp_sft_trainer \
   data.train_files=./dataset/cold_start/train.parquet \

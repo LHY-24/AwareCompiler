@@ -8,13 +8,15 @@ from typing import Dict
 from agent_r1.tool.tool_base import Tool
 from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_instrcount import get_instrcount, get_overOz
 
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..","../.."))
+
 class InstrCountTool(Tool):
     """
     Tool for counting instructions in LLVM IR code with specified optimization flags
     """
     
     def __init__(self, llvm_tools_path=os.path.join(os.path.dirname(__file__), 'raw_tool'), 
-                llvm_ir_dir="/root/project/Compiler-R1/examples/data_preprocess/llvmir_datasets/"
+                llvm_ir_dir= PROJECT_ROOT + "/examples/data_preprocess/llvmir_datasets/"
                 ):
         """
         Initialize the tool for counting instructions in LLVM IR code
@@ -30,14 +32,27 @@ class InstrCountTool(Tool):
             "properties": {
                 "filename": {
                     "type": "string",
-                    "description": "Name of the LLVM IR file (will be loaded from the llvm_ir_dir)"
+                    "description": (
+                        "The exact name of the LLVM IR file to analyze. "
+                        "This file must exist in the directory: /root/Compiler-R1_1/examples/data_preprocess/llvmir_datasets/. "
+                        "Example: 'test.ll'"
+                    )
                 },
                 "optimization_flags": {
                     "type": "array",
-                    "description": "LLVM optimization flags to apply before counting instructions (e.g., ['--sroa', '--early-cse'])"
+                    "description": (
+                        "A list of LLVM optimization flags to apply to the IR before counting instructions. "
+                        "Each flag should be a string starting with '--', e.g., '--sroa', '--instcombine'. "
+                        "Example: ['--mem2reg', '--instcombine', '--simplifycfg']"
+                    )
                 },
             },
-            "required": ["filename", "optimization_flags"]
+            "required": ["filename", "optimization_flags"],
+            "description": (
+                "Call this tool to count instructions in a specified LLVM IR file after applying a sequence of optimization flags. "
+                "You must provide both the filename (from the dataset directory) and a list of optimization flags. "
+                "Example usage: instrcount(filename='test.ll', optimization_flags=['--mem2reg', '--instcombine'])"
+            )
         }
         
         self.llvm_tools_path = llvm_tools_path
@@ -96,7 +111,7 @@ class InstrCountTool(Tool):
                     input_code,
                     optimization_flags,
                     llvm_tools_path=llvm_tools_path
-                )
+                ) * 100
                 result["improvement_over_oz"] = over_oz
             
             return json.dumps(result)

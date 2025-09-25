@@ -13,8 +13,11 @@ def _default_compute_score_format(data_source, solution_str, extra_info=None):
     
     if isinstance(res, (int, float, bool)):
         return float(res)
-    else:
+    elif isinstance(res, (list, tuple)) and len(res) > 0:
         return float(res[0])
+    else:
+        # Handle case where res might be None or other unexpected type
+        return 0.0
     
 def _default_compute_score_answer(data_source, solution_str, ground_truth, extra_info=None):
     if data_source == 'hotpotqa/hotpot_qa':
@@ -35,7 +38,13 @@ def _default_compute_score_answer(data_source, solution_str, ground_truth, extra
     #     # Consider adding a print here to see unexpected data_sources
     #     print(f"Warning: Encountered unhandled data_source for scoring: {data_source}")
     #     raise NotImplementedError
-    return res # Ensure the result is returned
+    if isinstance(res, (int, float, bool)):
+        return float(res)
+    elif isinstance(res, (list, tuple)) and len(res) > 0:
+        return float(res[0])
+    else:
+        # Handle case where res might be None or other unexpected type
+        return 0.0
 
 # You'll likely need a similar modification for _default_compute_score_format_answer
 # if that's the function actually being called by your reward function's __call__ method.
@@ -59,4 +68,11 @@ def _default_compute_score_format_answer(data_source, solution_str, ground_truth
     # else:
     #     print(f"Warning: Encountered unhandled data_source for format/answer scoring: {data_source}")
     #     raise NotImplementedError
-    return res
+    
+    if isinstance(res, (int, float, bool)):
+        return float(res)
+    elif isinstance(res, (list, tuple)) and len(res) > 0:
+        return float(res[0])
+    else:
+        # Handle case where res might be None or other unexpected type
+        return 0.0

@@ -50,8 +50,8 @@ def GenerateOptimizedLLCode(input_code, optimization_options, llvm_tools_path=No
         # print(f"Standard error: {e.stderr}")
         return input_code
 
-def get_instrcount(ll_code, *opt_flags, llvm_tools_path=None):
 
+def get_instrcount(ll_code, *opt_flags, llvm_tools_path=None):
     if llvm_tools_path is None:
         raise ValueError("llvm_tools_path must be provided")
     
@@ -59,8 +59,9 @@ def get_instrcount(ll_code, *opt_flags, llvm_tools_path=None):
 
     return get_inst_count_obs(after_ll_code, "llvm-10.0.0")
 
+
 def get_overOz(ll_code, opt_flags, llvm_tools_path=None):
     ic_value = get_instrcount(ll_code, *opt_flags, llvm_tools_path=llvm_tools_path)
-    oz_value = get_instrcount(ll_code, ["-Oz"],llvm_tools_path=llvm_tools_path)
+    oz_value = get_instrcount(ll_code, ["-Oz"], llvm_tools_path=llvm_tools_path)
     overoz = (oz_value - ic_value) / oz_value
     return overoz
