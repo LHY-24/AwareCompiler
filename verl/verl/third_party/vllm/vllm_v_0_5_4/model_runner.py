@@ -21,8 +21,16 @@ import warnings
 
 import vllm.envs as envs
 from vllm.attention import (AttentionMetadata, get_attn_backend)
-from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig, PromptAdapterConfig,
-                         SchedulerConfig)
+try:
+    from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig, PromptAdapterConfig,
+                             SchedulerConfig)
+except ImportError:
+    # For vllm 0.5.1 compatibility
+    from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig,
+                             SchedulerConfig)
+    # PromptAdapterConfig doesn't exist in vllm 0.5.1, create a dummy class
+    class PromptAdapterConfig:
+        pass
 from vllm.logger import init_logger
 from vllm.lora.layers import LoRAMapping
 from vllm.lora.request import LoRARequest

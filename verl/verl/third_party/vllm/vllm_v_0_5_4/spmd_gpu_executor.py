@@ -24,8 +24,16 @@ from vllm.logger import init_logger
 from vllm.lora.request import LoRARequest
 from vllm.sequence import SamplerOutput, ExecuteModelRequest
 
-from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig, PromptAdapterConfig,
-                         SchedulerConfig, SpeculativeConfig)
+try:
+    from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig, PromptAdapterConfig,
+                             SchedulerConfig, SpeculativeConfig)
+except ImportError:
+    # For vllm 0.5.1 compatibility
+    from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig,
+                             SchedulerConfig, SpeculativeConfig)
+    # PromptAdapterConfig doesn't exist in vllm 0.5.1, create a dummy class
+    class PromptAdapterConfig:
+        pass
 from .config import ModelConfig, LoadConfig
 
 logger = init_logger(__name__)

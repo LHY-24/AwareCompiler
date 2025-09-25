@@ -25,9 +25,18 @@ import torch.nn as nn
 from transformers import PretrainedConfig
 from .config import ModelConfig, LoadConfig
 
-from vllm.config import (CacheConfig, DecodingConfig, DeviceConfig, EngineConfig, LoRAConfig, MultiModalConfig,
-                         ObservabilityConfig, ParallelConfig, PromptAdapterConfig, SchedulerConfig, SpeculativeConfig,
-                         TokenizerPoolConfig)
+try:
+    from vllm.config import (CacheConfig, DecodingConfig, DeviceConfig, EngineConfig, LoRAConfig, MultiModalConfig,
+                             ObservabilityConfig, ParallelConfig, PromptAdapterConfig, SchedulerConfig, SpeculativeConfig,
+                             TokenizerPoolConfig)
+except ImportError:
+    # For vllm 0.5.1 compatibility
+    from vllm.config import (CacheConfig, DecodingConfig, DeviceConfig, EngineConfig, LoRAConfig, MultiModalConfig,
+                             ObservabilityConfig, ParallelConfig, SchedulerConfig, SpeculativeConfig,
+                             TokenizerPoolConfig)
+    # PromptAdapterConfig doesn't exist in vllm 0.5.1, create a dummy class
+    class PromptAdapterConfig:
+        pass
 from vllm.executor.executor_base import ExecutorBase
 from vllm.logger import init_logger
 from vllm.utils import FlexibleArgumentParser

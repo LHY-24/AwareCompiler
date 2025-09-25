@@ -21,8 +21,16 @@ import torch
 import torch.distributed
 import torch.nn as nn
 
-from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig, PromptAdapterConfig,
-                         SchedulerConfig, SpeculativeConfig)
+try:
+    from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig, PromptAdapterConfig,
+                             SchedulerConfig, SpeculativeConfig)
+except ImportError:
+    # For vllm 0.5.1 compatibility
+    from vllm.config import (CacheConfig, DeviceConfig, LoRAConfig, MultiModalConfig, ParallelConfig,
+                             SchedulerConfig, SpeculativeConfig)
+    # PromptAdapterConfig doesn't exist in vllm 0.5.1, create a dummy class
+    class PromptAdapterConfig:
+        pass
 from vllm.model_executor import set_random_seed
 from vllm.sequence import (ExecuteModelRequest, IntermediateTensors, SamplerOutput)
 from vllm.worker.cache_engine import CacheEngine

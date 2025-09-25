@@ -26,8 +26,14 @@ from vllm import LLM
 from vllm.inputs import (PromptInputs, TextPrompt, TokensPrompt, parse_and_batch_prompt)
 from vllm.logger import init_logger
 from vllm.lora.request import LoRARequest
-from vllm.model_executor.guided_decoding import (GuidedDecodingRequest, get_local_guided_decoding_logits_processor)
-from vllm.model_executor.guided_decoding.guided_fields import LLMGuidedOptions
+try:
+    from vllm.model_executor.guided_decoding import (GuidedDecodingRequest, get_local_guided_decoding_logits_processor)
+    from vllm.model_executor.guided_decoding.guided_fields import LLMGuidedOptions
+except ImportError:
+    # For compatibility with vllm 0.5.1 where guided decoding might have issues
+    GuidedDecodingRequest = None
+    get_local_guided_decoding_logits_processor = None
+    LLMGuidedOptions = None
 from vllm.outputs import EmbeddingRequestOutput, RequestOutput
 from vllm.pooling_params import PoolingParams
 from vllm.prompt_adapter.request import PromptAdapterRequest
