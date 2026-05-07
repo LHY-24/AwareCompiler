@@ -24,7 +24,7 @@ Generated plots, exploratory chart scripts, logs, checkpoints, wandb runs, raw L
 conda create -n awarecompiler python=3.10 -y
 conda activate awarecompiler
 pip install vllm flash-attn --no-build-isolation
-pip install FlagEmbedding faiss-cpu pandas pyarrow requests
+pip install FlagEmbedding faiss-cpu pandas pyarrow requests matplotlib
 pip install git+https://github.com/volcengine/verl.git
 ```
 
@@ -88,12 +88,22 @@ Run the latest vanilla LLM baselines over the seven paper suites:
 ```bash
 export AWARECOMPILER_LLM_API_KEY=<your-key>
 export AWARECOMPILER_LLM_BASE_URL=https://api.openai.com/v1
-export AWARECOMPILER_LLM_MODELS=GPT-5.5=gpt-5.5
+export AWARECOMPILER_LLM_MODELS=GPT-5.5=gpt-5.5,Gemini-3.1-Pro=gemini-3.1-pro,Claude-Opus-4.7=claude-opus-4.7,DeepSeek-V3.2=deepseek-v3.2,GLM-4.5=glm-4.5,Kimi-Dev-72B=kimi-dev-72b,Qwen3-Coder-480B=qwen3-coder-480b
 python baselines/run_vanilla_llm_baseline.py --resume
-python scripts/evaluate/analyze_results_summary_include_nonzero_pass.py
-python scripts/evaluate/plot_success_rates.py --results-dir results/latest_llm
+python scripts/evaluate/analyze_results_summary_include_nonzero_pass.py --results-dir results/latest_llm
+python scripts/evaluate/plot_success_rates.py --results-dir results/latest_llm --output figures/success_latest_llm.png
 ```
 
 If the anonymous artifact is used without raw LLVM IR files, set `AWARECOMPILER_LLVM_IR_DIR` to the raw LLVM IR directory before running.
+
+For the representative model-family figure used by the current anonymous paper draft, the repository also includes curated summary files:
+
+```bash
+python scripts/evaluate/plot_success_rates.py \
+  --summary-csv results/model_bench_success_rate_curated_representative.csv \
+  --output figures/success_curated_representative.png
+```
+
+The representative model list is recorded in `config/baseline_models.representative.json`. The curated CSVs are for paper-figure reproduction and should be replaced by full API reruns before final release.
 
 No private API keys, author identifiers, local account paths, or original git history are included in this artifact.
