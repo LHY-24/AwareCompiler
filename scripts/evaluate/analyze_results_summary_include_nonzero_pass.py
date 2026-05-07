@@ -1,11 +1,12 @@
 import os
+import argparse
 import pandas as pd
 import glob
 from pathlib import Path
 
-RESULTS_DIR = str(Path(__file__).resolve().parents[2] / "results")
-OUTPUT_CSV_AVG = str(Path(__file__).resolve().parents[2] / "results" / "model_bench_summary_include_nonzero_pass.csv")
-OUTPUT_CSV_SUCCESS = str(Path(__file__).resolve().parents[2] / "results" / "model_bench_success_rate_include_nonzero_pass.csv")
+DEFAULT_RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
+DEFAULT_OUTPUT_CSV_AVG = Path(__file__).resolve().parents[2] / "results" / "model_bench_summary_include_nonzero_pass.csv"
+DEFAULT_OUTPUT_CSV_SUCCESS = Path(__file__).resolve().parents[2] / "results" / "model_bench_success_rate_include_nonzero_pass.csv"
 
 # bench名映射（文件名到列名）
 BENCH_MAP = {
@@ -29,8 +30,14 @@ def get_model_name(filename):
     base = os.path.basename(filename)
     return base.split('_')[0]
 
+parser = argparse.ArgumentParser(description='Aggregate LLM baseline result CSVs')
+parser.add_argument('--results-dir', type=Path, default=DEFAULT_RESULTS_DIR)
+parser.add_argument('--output-csv-avg', type=Path, default=DEFAULT_OUTPUT_CSV_AVG)
+parser.add_argument('--output-csv-success', type=Path, default=DEFAULT_OUTPUT_CSV_SUCCESS)
+args = parser.parse_args()
+
 # 收集所有结果csv
-csv_files = glob.glob(os.path.join(RESULTS_DIR, '*.csv'))
+csv_files = glob.glob(os.path.join(str(args.results_dir), '*.csv'))
 
 # {model: {bench: {'avg': avg, 'success_rate': rate}}}
 summary = {}
@@ -88,15 +95,15 @@ for model in sorted(summary.keys()):
 # 输出平均优化效果表
 avg_df = pd.DataFrame(avg_rows)
 avg_df.set_index('model', inplace=True)
-avg_df.to_csv(OUTPUT_CSV_AVG)
-print(f'Average improvement summary saved to {OUTPUT_CSV_AVG}')
+avg_df.to_csv(args.output_csv_avg)
+print(f'Average improvement summary saved to {args.output_csv_avg}')
 print("Average Improvement:")
 print(avg_df)
 
 # 输出成功率表
 success_df = pd.DataFrame(success_rows)
 success_df.set_index('model', inplace=True)
-success_df.to_csv(OUTPUT_CSV_SUCCESS)
-print(f'\nSuccess rate summary saved to {OUTPUT_CSV_SUCCESS}')
+success_df.to_csv(args.output_csv_success)
+print(f'\nSuccess rate summary saved to {args.output_csv_success}')
 print("Success Rate:")
 print(success_df)

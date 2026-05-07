@@ -82,4 +82,18 @@ python baselines/iterative_feedback_experiment.py
 python baselines/tool_augmented_llm_experiment.py
 ```
 
+
+Run the latest vanilla LLM baselines over the seven paper suites:
+
+```bash
+export AWARECOMPILER_LLM_API_KEY=<your-key>
+export AWARECOMPILER_LLM_BASE_URL=https://api.openai.com/v1
+export AWARECOMPILER_LLM_MODELS=GPT-5.5=gpt-5.5
+python baselines/run_vanilla_llm_baseline.py --resume
+python scripts/evaluate/analyze_results_summary_include_nonzero_pass.py
+python scripts/evaluate/plot_success_rates.py --results-dir results/latest_llm
+```
+
+If the anonymous artifact is used without raw LLVM IR files, set `AWARECOMPILER_LLVM_IR_DIR` to the raw LLVM IR directory before running.
+
 No private API keys, author identifiers, local account paths, or original git history are included in this artifact.
