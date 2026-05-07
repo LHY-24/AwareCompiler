@@ -91,17 +91,17 @@ export AWARECOMPILER_LLM_BASE_URL=https://api.openai.com/v1
 export AWARECOMPILER_LLM_MODELS=GPT-5.5=gpt-5.5,Gemini-3.1-Pro=gemini-3.1-pro,Claude-Opus-4.7=claude-opus-4.7,DeepSeek-V3.2=deepseek-v3.2,GLM-4.5=glm-4.5,Kimi-Dev-72B=kimi-dev-72b,Qwen3-Coder-480B=qwen3-coder-480b
 python baselines/run_vanilla_llm_baseline.py --resume
 python scripts/evaluate/analyze_results_summary_include_nonzero_pass.py --results-dir results/latest_llm
-python scripts/evaluate/plot_success_rates.py --results-dir results/latest_llm --output figures/success_latest_llm.png
+python scripts/evaluate/plot_success_rates.py --results-dir results/latest_llm --output results/plots/success_latest_llm.png
 ```
 
 If the anonymous artifact is used without raw LLVM IR files, set `AWARECOMPILER_LLVM_IR_DIR` to the raw LLVM IR directory before running.
 
-For the representative model-family figure used by the current anonymous paper draft, the repository also includes curated summary files:
+For reproducing the representative model-family plot used by the current anonymous paper draft, the repository includes curated summary CSV files:
 
 ```bash
 python scripts/evaluate/plot_success_rates.py \
   --summary-csv results/model_bench_success_rate_curated_representative.csv \
-  --output figures/success_curated_representative.png
+  --output results/plots/success_curated_representative.png
 ```
 
 The representative model list is recorded in `config/baseline_models.representative.json`. The curated CSVs are for paper-figure reproduction and should be replaced by full API reruns before final release.

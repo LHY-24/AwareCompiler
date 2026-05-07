@@ -245,7 +245,7 @@ def main():
         default=None,
         help="Optional directory of raw '*_results_rl_validation_*.csv' files. Overrides --summary-csv.",
     )
-    parser.add_argument("--output", type=Path, default=Path("figures/success_curated_representative.png"))
+    parser.add_argument("--output", type=Path, default=Path("results/plots/success_curated_representative.png"))
     parser.add_argument("--model-order", type=str, default=None)
     parser.add_argument("--max-models", type=int, default=None)
     parser.add_argument("--title", type=str, default=None)

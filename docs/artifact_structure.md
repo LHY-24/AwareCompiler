@@ -7,7 +7,6 @@
 - `baselines/`: optional external-LLM baseline experiments using environment-provided credentials.
 - `dataset/`: compact parquet splits used by the training and validation scripts.
 - `knowledge_base/`: compiler pass knowledge and compact processed artifacts.
-- `results/`: measured CSV outputs used for auditing reported results, plus curated representative summaries for the anonymous paper draft figures.
+- `results/`: measured CSV outputs used for auditing reported results, plus curated representative summaries for regenerating anonymous draft plots.
 - `examples/data_preprocess/`: active SFT/RL data-construction scripts.
 - `archive/`: legacy scripts retained for auditability only.
-- `figures/`: paper-level framework figure and generated success-rate plots when evaluation scripts are run.
