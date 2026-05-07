@@ -75,7 +75,9 @@ python scripts/evaluate/analyze_results_summary_include_nonzero_pass.py
 ## External LLM Baselines
 
 ```bash
-export OPENROUTER_API_KEY=<your-key>
+export AWARECOMPILER_LLM_API_KEY=<your-key>
+export AWARECOMPILER_LLM_BASE_URL=https://api.openai.com/v1
+export AWARECOMPILER_LLM_MODEL=gpt-5.5
 python baselines/iterative_feedback_experiment.py
 python baselines/tool_augmented_llm_experiment.py
 ```

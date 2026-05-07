@@ -26,24 +26,25 @@ import argparse
 import pandas as pd
 from pathlib import Path
 import requests
+from llm_client import chat_completion, get_llm_config
 
 # ============================================================
 # Configuration
 # ============================================================
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+# OpenAI-compatible endpoint. Configure with:
+# AWARECOMPILER_LLM_API_KEY / OPENAI_API_KEY
+# AWARECOMPILER_LLM_BASE_URL / OPENAI_BASE_URL
+# AWARECOMPILER_LLM_MODEL (default: gpt-5.5)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LLVM_IR_DIR = str(REPO_ROOT / "examples/data_preprocess/llvmir_datasets")
 LLVM_TOOLS_PATH = str(REPO_ROOT / "agent_r1/tool/tools/comiler_autotuning/raw_tool")
 DATASET_DIR = str(REPO_ROOT / "dataset/rl")
 
-# Models to test (OpenRouter model IDs)
-MODELS = [
-    ("deepseek/deepseek-chat-v3-0324", "DeepSeek-V3"),
-    ("qwen/qwen3-235b-a22b", "Qwen3-235B"),
-    ("anthropic/claude-sonnet-4", "Claude-Sonnet-4"),
-]
+# By default, evaluate the configured OpenAI-compatible model.
+# Override with AWARECOMPILER_LLM_MODEL, e.g. gpt-5.5.
+_llm_cfg = get_llm_config()
+MODELS = [(_llm_cfg["model"], _llm_cfg["model"])]
 
 # Benchmarks to test (use CBENCH for efficiency, expand if needed)
 DATASETS = [
@@ -80,34 +81,13 @@ def get_overoz(ll_code, opt_flags):
 # LLM API
 # ============================================================
 def call_llm(messages, model_id):
-    """Call LLM via OpenRouter API."""
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://awarecompiler.org",
-    }
-    payload = {
-        "model": model_id,
-        "messages": messages,
-        "max_tokens": 2048,
-        "temperature": 0.7,
-    }
-
+    """Call an OpenAI-compatible Chat Completions endpoint."""
     for attempt in range(3):
         try:
-            response = requests.post(OPENROUTER_API_URL, headers=headers,
-                                     json=payload, timeout=60)
-            result = response.json()
-            if "choices" in result and result["choices"]:
-                return result["choices"][0]["message"]["content"]
-            elif "error" in result:
-                print(f"    API error: {result['error']}")
-                time.sleep(RETRY_DELAY * (attempt + 1))
-            else:
-                print(f"    Unexpected response: {str(result)[:200]}")
-                time.sleep(RETRY_DELAY * (attempt + 1))
+            completion = chat_completion(messages, max_tokens=2048, temperature=0.7)
+            return completion.choices[0].message.content
         except Exception as e:
-            print(f"    Request failed (attempt {attempt+1}): {e}")
+            print(f"    Request failed (attempt {attempt+1}) for {model_id}: {e}")
             time.sleep(RETRY_DELAY * (attempt + 1))
     return None
 

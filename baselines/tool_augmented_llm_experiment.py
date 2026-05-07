@@ -22,12 +22,15 @@ import argparse
 import pandas as pd
 from pathlib import Path
 import requests
+from llm_client import chat_completion, get_llm_config
 
 # ============================================================
 # Configuration
 # ============================================================
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+# OpenAI-compatible endpoint. Configure with:
+# AWARECOMPILER_LLM_API_KEY / OPENAI_API_KEY
+# AWARECOMPILER_LLM_BASE_URL / OPENAI_BASE_URL
+# AWARECOMPILER_LLM_MODEL (default: gpt-5.5)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LLVM_IR_DIR = str(REPO_ROOT / "examples/data_preprocess/llvmir_datasets")
@@ -35,11 +38,8 @@ LLVM_TOOLS_PATH = str(REPO_ROOT / "agent_r1/tool/tools/comiler_autotuning/raw_to
 DATASET_DIR = str(REPO_ROOT / "dataset/rl")
 KNOWLEDGE_BASE_PATH = str(REPO_ROOT / "knowledge_base")
 
-MODELS = [
-    ("deepseek/deepseek-chat-v3-0324", "DeepSeek-V3"),
-    ("qwen/qwen3-235b-a22b", "Qwen3-235B"),
-    ("anthropic/claude-sonnet-4", "Claude-Sonnet-4"),
-]
+_llm_cfg = get_llm_config()
+MODELS = [(_llm_cfg["model"], _llm_cfg["model"])]
 
 DATASETS = [
     "rl_validation_cbench-v1.parquet",
@@ -269,35 +269,16 @@ Example final output:
 
 
 def call_llm_with_tools(messages, model_id):
-    """Call LLM via OpenRouter with tool definitions."""
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://awarecompiler.org",
-    }
-    payload = {
-        "model": model_id,
-        "messages": messages,
-        "tools": TOOL_DEFINITIONS,
-        "max_tokens": 4096,
-        "temperature": 0.7,
-    }
-
+    """Call an OpenAI-compatible Chat Completions endpoint with tools."""
     for attempt in range(3):
         try:
-            response = requests.post(OPENROUTER_API_URL, headers=headers,
-                                     json=payload, timeout=90)
-            result = response.json()
-            if "choices" in result and result["choices"]:
-                return result["choices"][0]["message"]
-            elif "error" in result:
-                print(f"    API error: {result['error']}")
-                time.sleep(RETRY_DELAY * (attempt + 1))
-            else:
-                print(f"    Unexpected: {str(result)[:200]}")
-                time.sleep(RETRY_DELAY * (attempt + 1))
+            completion = chat_completion(
+                messages, tools=TOOL_DEFINITIONS, max_tokens=4096, temperature=0.7
+            )
+            message = completion.choices[0].message
+            return message.model_dump(exclude_none=True)
         except Exception as e:
-            print(f"    Request failed (attempt {attempt+1}): {e}")
+            print(f"    Request failed (attempt {attempt+1}) for {model_id}: {e}")
             time.sleep(RETRY_DELAY * (attempt + 1))
     return None
 

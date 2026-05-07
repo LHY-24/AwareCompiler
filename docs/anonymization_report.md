@@ -23,7 +23,7 @@ This artifact branch was prepared for double-anonymous NeurIPS review.
 
 ## Sanitization Checks
 
-The release was scanned for API-key patterns, original GitHub owner strings, SSH host configuration, and local absolute paths. External LLM scripts now read credentials from `OPENROUTER_API_KEY` instead of embedding a key.
+The release was scanned for API-key patterns, original GitHub owner strings, SSH host configuration, and local absolute paths. External LLM scripts now read credentials from OpenAI-compatible environment variables instead of embedding keys.
 
 ## Known Notes
 
