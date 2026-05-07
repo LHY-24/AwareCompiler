@@ -1,0 +1,148 @@
+{
+  "program_id": "github-v0_46238.ll",
+  "autophase_features": {
+    "BBNumArgsHi": 0,
+    "BBNumArgsLo": 1,
+    "onePred": 133,
+    "onePredOneSuc": 68,
+    "onePredTwoSuc": 29,
+    "oneSuccessor": 81,
+    "twoPred": 11,
+    "twoPredOneSuc": 3,
+    "twoEach": 3,
+    "twoSuccessor": 37,
+    "morePreds": 0,
+    "BB03Phi": 1,
+    "BBHiPhi": 0,
+    "BBNoPhi": 160,
+    "BeginPhi": 1,
+    "BranchCount": 118,
+    "returnInt": 56,
+    "CriticalCount": 5,
+    "NumEdges": 155,
+    "const32Bit": 219,
+    "const64Bit": 11,
+    "numConstZeroes": 112,
+    "numConstOnes": 58,
+    "UncondBranches": 81,
+    "binaryConstArg": 7,
+    "NumAShrInst": 0,
+    "NumAddInst": 6,
+    "NumAllocaInst": 36,
+    "NumAndInst": 0,
+    "BlockMid": 9,
+    "BlockLow": 152,
+    "NumBitCastInst": 34,
+    "NumBrInst": 118,
+    "NumCallInst": 121,
+    "NumGetElementPtrInst": 52,
+    "NumICmpInst": 38,
+    "NumLShrInst": 0,
+    "NumLoadInst": 142,
+    "NumMulInst": 0,
+    "NumOrInst": 0,
+    "NumPHIInst": 1,
+    "NumRetInst": 15,
+    "NumSExtInst": 5,
+    "NumSelectInst": 0,
+    "NumShlInst": 0,
+    "NumStoreInst": 54,
+    "NumSubInst": 0,
+    "NumTruncInst": 1,
+    "NumXorInst": 0,
+    "NumZExtInst": 2,
+    "TotalBlocks": 161,
+    "TotalInsts": 656,
+    "TotalMemInst": 405,
+    "TotalFuncs": 42,
+    "ArgsPhi": 2,
+    "testUnary": 222
+  },
+  "baseline_oz_instcount": 655,
+  "knowledge_base_entry": [
+    "--nary-reassociate",
+    "--mem2reg",
+    "--sccp",
+    "--dse",
+    "--sccp",
+    "--globalopt",
+    "--jump-threading",
+    "--inline",
+    "--aggressive-instcombine",
+    "--lower-expect",
+    "--instsimplify",
+    "--load-store-vectorizer",
+    "--newgvn"
+  ],
+  "trajectory": [
+    {
+      "turn": 1,
+      "thought": "Based on the program's characteristics and my experience, I'll formulate a strong initial optimization sequence.",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--instnamer",
+          "--loop-unroll-and-jam",
+          "--loop-interchange",
+          "--ipsccp",
+          "--globalopt",
+          "--constprop",
+          "--name-anon-globals",
+          "--gvn-hoist",
+          "--mergeicmps",
+          "--cross-dso-cfi",
+          "--tailcallelim",
+          "--gvn"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 2,
+      "thought": "My initial attempt yielded a performance of +0.0%. After reflecting, I believe I can achieve better results. My refined approach is to \"To better handle the high memory instruction count and frequent constants, --div-rem-pairs optimizes arithmetic ops, while removing --loop-interchange avoids unnecessary overhead given the moderate block count and lack of nested loops.\"",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--instnamer",
+          "--loop-unroll-and-jam",
+          "--div-rem-pairs",
+          "--ipsccp",
+          "--globalopt",
+          "--constprop",
+          "--name-anon-globals",
+          "--gvn-hoist",
+          "--mergeicmps",
+          "--cross-dso-cfi",
+          "--tailcallelim",
+          "--gvn"
+        ]
+      },
+      "observation": {
+        "status": "BetterThanOz",
+        "performance_vs_Oz": "+0.2%",
+        "is_crash": false
+      }
+    }
+  ],
+  "final_answer": {
+    "pass_sequence": [
+      "--instnamer",
+      "--loop-unroll-and-jam",
+      "--div-rem-pairs",
+      "--ipsccp",
+      "--globalopt",
+      "--constprop",
+      "--name-anon-globals",
+      "--gvn-hoist",
+      "--mergeicmps",
+      "--cross-dso-cfi",
+      "--tailcallelim",
+      "--gvn"
+    ],
+    "performance_vs_Oz": "+0.2%"
+  }
+}

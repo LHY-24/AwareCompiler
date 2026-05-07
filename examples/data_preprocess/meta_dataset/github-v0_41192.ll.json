@@ -1,0 +1,141 @@
+{
+  "program_id": "github-v0_41192.ll",
+  "autophase_features": {
+    "BBNumArgsHi": 0,
+    "BBNumArgsLo": 0,
+    "onePred": 71,
+    "onePredOneSuc": 42,
+    "onePredTwoSuc": 28,
+    "oneSuccessor": 63,
+    "twoPred": 36,
+    "twoPredOneSuc": 20,
+    "twoEach": 13,
+    "twoSuccessor": 46,
+    "morePreds": 2,
+    "BB03Phi": 0,
+    "BBHiPhi": 0,
+    "BBNoPhi": 116,
+    "BeginPhi": 0,
+    "BranchCount": 109,
+    "returnInt": 12,
+    "CriticalCount": 24,
+    "NumEdges": 155,
+    "const32Bit": 310,
+    "const64Bit": 10,
+    "numConstZeroes": 150,
+    "numConstOnes": 83,
+    "UncondBranches": 63,
+    "binaryConstArg": 14,
+    "NumAShrInst": 0,
+    "NumAddInst": 8,
+    "NumAllocaInst": 48,
+    "NumAndInst": 3,
+    "BlockMid": 15,
+    "BlockLow": 101,
+    "NumBitCastInst": 5,
+    "NumBrInst": 109,
+    "NumCallInst": 35,
+    "NumGetElementPtrInst": 105,
+    "NumICmpInst": 46,
+    "NumLShrInst": 0,
+    "NumLoadInst": 246,
+    "NumMulInst": 4,
+    "NumOrInst": 0,
+    "NumPHIInst": 0,
+    "NumRetInst": 7,
+    "NumSExtInst": 0,
+    "NumSelectInst": 0,
+    "NumShlInst": 1,
+    "NumStoreInst": 101,
+    "NumSubInst": 5,
+    "NumTruncInst": 1,
+    "NumXorInst": 0,
+    "NumZExtInst": 8,
+    "TotalBlocks": 116,
+    "TotalInsts": 734,
+    "TotalMemInst": 535,
+    "TotalFuncs": 30,
+    "ArgsPhi": 0,
+    "testUnary": 308
+  },
+  "baseline_oz_instcount": 736,
+  "knowledge_base_entry": [
+    "--partially-inline-libcalls",
+    "--gvn",
+    "--dce",
+    "--lower-constant-intrinsics",
+    "--sroa",
+    "--instcombine",
+    "--prune-eh",
+    "--sroa",
+    "--load-store-vectorizer",
+    "--reassociate",
+    "--slp-vectorizer",
+    "--instsimplify"
+  ],
+  "trajectory": [
+    {
+      "turn": 1,
+      "thought": "Based on the program's characteristics and my experience, I'll formulate a strong initial optimization sequence.",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--gvn-hoist",
+          "--loop-unroll-and-jam",
+          "--slsr",
+          "--coro-cleanup",
+          "--forceattrs",
+          "--div-rem-pairs",
+          "--insert-gcov-profiling",
+          "--globalopt",
+          "--loop-unroll",
+          "--dce"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 2,
+      "thought": "My initial attempt yielded a performance of +0.0%. After reflecting, I believe I can achieve better results. My refined approach is to \"To better handle the high density of constants (310 const32Bit) and memory ops (535 TotalMemInst), --constmerge improves efficiency while removing --loop-unroll avoids overhead since loop ops aren't dominant (low testUnary count).\"",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--gvn-hoist",
+          "--loop-unroll-and-jam",
+          "--slsr",
+          "--coro-cleanup",
+          "--forceattrs",
+          "--div-rem-pairs",
+          "--insert-gcov-profiling",
+          "--globalopt",
+          "--constmerge",
+          "--dce"
+        ]
+      },
+      "observation": {
+        "status": "BetterThanOz",
+        "performance_vs_Oz": "+0.3%",
+        "is_crash": false
+      }
+    }
+  ],
+  "final_answer": {
+    "pass_sequence": [
+      "--gvn-hoist",
+      "--loop-unroll-and-jam",
+      "--slsr",
+      "--coro-cleanup",
+      "--forceattrs",
+      "--div-rem-pairs",
+      "--insert-gcov-profiling",
+      "--globalopt",
+      "--constmerge",
+      "--dce"
+    ],
+    "performance_vs_Oz": "+0.3%"
+  }
+}

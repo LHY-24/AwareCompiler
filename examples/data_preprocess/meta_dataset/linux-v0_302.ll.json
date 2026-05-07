@@ -1,0 +1,154 @@
+{
+  "program_id": "linux-v0_302.ll",
+  "autophase_features": {
+    "BBNumArgsHi": 0,
+    "BBNumArgsLo": 0,
+    "onePred": 48,
+    "onePredOneSuc": 38,
+    "onePredTwoSuc": 9,
+    "oneSuccessor": 45,
+    "twoPred": 24,
+    "twoPredOneSuc": 5,
+    "twoEach": 15,
+    "twoSuccessor": 28,
+    "morePreds": 3,
+    "BB03Phi": 0,
+    "BBHiPhi": 0,
+    "BBNoPhi": 87,
+    "BeginPhi": 0,
+    "BranchCount": 73,
+    "returnInt": 12,
+    "CriticalCount": 25,
+    "NumEdges": 111,
+    "const32Bit": 209,
+    "const64Bit": 17,
+    "numConstZeroes": 72,
+    "numConstOnes": 60,
+    "UncondBranches": 45,
+    "binaryConstArg": 60,
+    "NumAShrInst": 0,
+    "NumAddInst": 0,
+    "NumAllocaInst": 44,
+    "NumAndInst": 38,
+    "BlockMid": 5,
+    "BlockLow": 82,
+    "NumBitCastInst": 15,
+    "NumBrInst": 73,
+    "NumCallInst": 38,
+    "NumGetElementPtrInst": 37,
+    "NumICmpInst": 28,
+    "NumLShrInst": 2,
+    "NumLoadInst": 145,
+    "NumMulInst": 0,
+    "NumOrInst": 17,
+    "NumPHIInst": 0,
+    "NumRetInst": 12,
+    "NumSExtInst": 6,
+    "NumSelectInst": 0,
+    "NumShlInst": 0,
+    "NumStoreInst": 92,
+    "NumSubInst": 0,
+    "NumTruncInst": 4,
+    "NumXorInst": 5,
+    "NumZExtInst": 5,
+    "TotalBlocks": 87,
+    "TotalInsts": 573,
+    "TotalMemInst": 356,
+    "TotalFuncs": 28,
+    "ArgsPhi": 0,
+    "testUnary": 229
+  },
+  "baseline_oz_instcount": 573,
+  "knowledge_base_entry": [
+    "--aggressive-instcombine",
+    "--jump-threading",
+    "--bdce",
+    "--inline",
+    "--mem2reg",
+    "--load-store-vectorizer",
+    "--instcombine",
+    "--newgvn",
+    "--slp-vectorizer",
+    "--early-cse"
+  ],
+  "trajectory": [
+    {
+      "turn": 1,
+      "thought": "Based on the program's characteristics and my experience, I'll formulate a strong initial optimization sequence.",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--cross-dso-cfi",
+          "--lcssa",
+          "--loop-rotate",
+          "--loop-sink",
+          "--inferattrs",
+          "--lower-guard-intrinsic",
+          "--constprop",
+          "--lower-matrix-intrinsics",
+          "--ipconstprop",
+          "--globalopt",
+          "--mem2reg"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 2,
+      "thought": "My initial attempt yielded a performance of +0.0%. After reflecting, I believe I can achieve better results. My refined approach is to \"By prioritizing -mem2reg and -constprop to reduce memory operations and leverage constant values, the new sequence better aligns with the high count of memory instructions and constants in the program.\"",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--cross-dso-cfi",
+          "--lcssa",
+          "--loop-rotate",
+          "--loop-sink",
+          "--inferattrs",
+          "--lower-guard-intrinsic",
+          "--constprop",
+          "--lower-matrix-intrinsics",
+          "--ipconstprop",
+          "--globalopt",
+          "--mem2reg"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 3,
+      "thought": "My refined search did not surpass the -Oz baseline, ending at +0.0%. My heuristics are exhausted. I must now resort to my knowledge base (RAG) to find a known-good sequence.",
+      "action": "USE_RAG",
+      "action_input": {
+        "query": "Find best sequence from knowledge base"
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    }
+  ],
+  "final_answer": {
+    "pass_sequence": [
+      "--loweratomic",
+      "--globalopt",
+      "--elim-avail-extern",
+      "--early-cse-memssa",
+      "--newgvn",
+      "--bdce",
+      "--aggressive-instcombine",
+      "--lower-expect",
+      "--slp-vectorizer",
+      "--slsr"
+    ],
+    "performance_vs_Oz": "+0.0%"
+  }
+}

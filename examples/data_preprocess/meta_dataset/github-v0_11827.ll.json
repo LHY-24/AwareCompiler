@@ -1,0 +1,152 @@
+{
+  "program_id": "github-v0_11827.ll",
+  "autophase_features": {
+    "BBNumArgsHi": 0,
+    "BBNumArgsLo": 0,
+    "onePred": 6,
+    "onePredOneSuc": 2,
+    "onePredTwoSuc": 3,
+    "oneSuccessor": 3,
+    "twoPred": 2,
+    "twoPredOneSuc": 0,
+    "twoEach": 2,
+    "twoSuccessor": 5,
+    "morePreds": 1,
+    "BB03Phi": 0,
+    "BBHiPhi": 0,
+    "BBNoPhi": 11,
+    "BeginPhi": 0,
+    "BranchCount": 8,
+    "returnInt": 0,
+    "CriticalCount": 4,
+    "NumEdges": 13,
+    "const32Bit": 5,
+    "const64Bit": 4,
+    "numConstZeroes": 8,
+    "numConstOnes": 2,
+    "UncondBranches": 3,
+    "binaryConstArg": 0,
+    "NumAShrInst": 0,
+    "NumAddInst": 0,
+    "NumAllocaInst": 2,
+    "NumAndInst": 0,
+    "BlockMid": 0,
+    "BlockLow": 11,
+    "NumBitCastInst": 0,
+    "NumBrInst": 8,
+    "NumCallInst": 2,
+    "NumGetElementPtrInst": 0,
+    "NumICmpInst": 5,
+    "NumLShrInst": 0,
+    "NumLoadInst": 8,
+    "NumMulInst": 0,
+    "NumOrInst": 0,
+    "NumPHIInst": 0,
+    "NumRetInst": 1,
+    "NumSExtInst": 1,
+    "NumSelectInst": 0,
+    "NumShlInst": 0,
+    "NumStoreInst": 2,
+    "NumSubInst": 0,
+    "NumTruncInst": 0,
+    "NumXorInst": 0,
+    "NumZExtInst": 0,
+    "TotalBlocks": 11,
+    "TotalInsts": 33,
+    "TotalMemInst": 14,
+    "TotalFuncs": 3,
+    "ArgsPhi": 0,
+    "testUnary": 13
+  },
+  "baseline_oz_instcount": 32,
+  "knowledge_base_entry": [
+    "--globalopt",
+    "--inline",
+    "--flattencfg",
+    "--gvn-hoist",
+    "--early-cse-memssa",
+    "--gvn",
+    "--mergefunc",
+    "--dce",
+    "--slp-vectorizer",
+    "--instcombine",
+    "--mldst-motion",
+    "--inline",
+    "--jump-threading",
+    "--ipsccp",
+    "--instcombine",
+    "--memcpyopt"
+  ],
+  "trajectory": [
+    {
+      "turn": 1,
+      "thought": "Based on the program's characteristics and my experience, I'll formulate a strong initial optimization sequence.",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--inject-tli-mappings",
+          "--correlated-propagation",
+          "--mergefunc",
+          "--insert-gcov-profiling",
+          "--post-inline-ee-instrument",
+          "--lowerinvoke",
+          "--instcombine",
+          "--ipsccp",
+          "--loop-simplifycfg",
+          "--deadargelim",
+          "--globaldce",
+          "--functionattrs",
+          "--rewrite-statepoints-for-gc"
+        ]
+      },
+      "observation": {
+        "status": "WorseThanOz",
+        "performance_vs_Oz": "+0.0%",
+        "is_crash": false
+      }
+    },
+    {
+      "turn": 2,
+      "thought": "My initial attempt yielded a performance of +0.0%. After reflecting, I believe I can achieve better results. My refined approach is to \"By removing --loop-simplifycfg, the optimizer avoids unnecessary loop transformations for a program with few edges and simple control flow, better matching its low-complexity structure.\" (39 words)",
+      "action": "GENERATE_SEQUENCE",
+      "action_input": {
+        "pass_sequence": [
+          "--inject-tli-mappings",
+          "--correlated-propagation",
+          "--mergefunc",
+          "--insert-gcov-profiling",
+          "--post-inline-ee-instrument",
+          "--lowerinvoke",
+          "--instcombine",
+          "--ipsccp",
+          "--deadargelim",
+          "--globaldce",
+          "--functionattrs",
+          "--rewrite-statepoints-for-gc"
+        ]
+      },
+      "observation": {
+        "status": "BetterThanOz",
+        "performance_vs_Oz": "+3.1%",
+        "is_crash": false
+      }
+    }
+  ],
+  "final_answer": {
+    "pass_sequence": [
+      "--inject-tli-mappings",
+      "--correlated-propagation",
+      "--mergefunc",
+      "--insert-gcov-profiling",
+      "--post-inline-ee-instrument",
+      "--lowerinvoke",
+      "--instcombine",
+      "--ipsccp",
+      "--deadargelim",
+      "--globaldce",
+      "--functionattrs",
+      "--rewrite-statepoints-for-gc"
+    ],
+    "performance_vs_Oz": "+3.1%"
+  }
+}
