@@ -31,8 +31,8 @@ from verl.utils.tracking import ValidationGenerationsLogger
 from torch.utils.data import RandomSampler, SequentialSampler
 from torchdata.stateful_dataloader import StatefulDataLoader
 
-from agent_r1.llm_agent.generation import ToolGenerationManager, ToolGenerationConfig
-from agent_r1.tool.tool_env import ToolEnv
+from awarecompiler.llm_agent.generation import ToolGenerationManager, ToolGenerationConfig
+from awarecompiler.tool.tool_env import ToolEnv
 
 WorkerType = Type[Worker]
 

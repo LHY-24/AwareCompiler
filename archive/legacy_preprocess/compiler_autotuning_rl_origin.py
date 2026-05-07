@@ -26,7 +26,7 @@ from tqdm import tqdm
 import numpy as np
 from verl.utils.hdfs_io import copy, makedirs
 import glob
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_autophase import get_autophase_obs
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_autophase import get_autophase_obs
 
 def read_json_file(file_path):
     """

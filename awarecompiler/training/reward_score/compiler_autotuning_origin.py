@@ -8,7 +8,7 @@ import datetime # Added for the dummy save function
 from typing import List, Union, Optional, Dict, Any, Tuple
 
 # This function is used by the scoring logic, so it's kept.
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_instrcount import get_overOz
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_instrcount import get_overOz
 
 # --- Helper Functions (Existing and New) ---
 
@@ -470,7 +470,7 @@ def compute_score_answer(solution_str: Optional[str], ground_truth: Optional[Uni
         
         # Calculate overOz using the extracted passes
         llvm_tools_path = os.path.join(os.path.dirname(__file__), 
-                                     '../../../agent_r1/tool/tools/comiler_autotuning/raw_tool/')
+                                     '../../../awarecompiler/tool/tools/compiler_autotuning/raw_tool/')
         
         overoz = get_overOz(ll_code, pass_list, llvm_tools_path=llvm_tools_path)
         print(f"[DEBUG] pass_list: {pass_list}, overOz: {overoz}")

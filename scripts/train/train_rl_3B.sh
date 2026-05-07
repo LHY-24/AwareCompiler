@@ -21,7 +21,7 @@ latest_checkpoint=$(ls -dt $sft_output_dir/global_step_* 2>/dev/null | head -n 1
 echo "latest_checkpoint: $latest_checkpoint"
 
 
-python3 -m agent_r1.src.main_agent \
+python3 -m awarecompiler.training.main_agent \
   algorithm.adv_estimator=grpo \
   data.train_files=./dataset/rl/rl_train.parquet \
   "data.val_files=[./dataset/rl/rl_validation_cbench-v1.parquet,./dataset/rl/rl_validation_blas-v0.parquet,./dataset/rl/rl_validation_chstone-v0.parquet,./dataset/rl/rl_validation_mibench-v1.parquet,./dataset/rl/rl_validation_npb-v0.parquet,./dataset/rl/rl_validation_opencv-v0.parquet,./dataset/rl/rl_validation_tensorflow-v0.parquet]" \

@@ -13,7 +13,7 @@ from dataclasses import dataclass
 import random
 
 from .tensor_helper import TensorHelper, TensorConfig
-from agent_r1.tool.tool_env import ToolEnv, step, step_batch
+from awarecompiler.tool.tool_env import ToolEnv, step, step_batch
 from verl import DataProto
 from verl.utils.tracking import Tracking
 

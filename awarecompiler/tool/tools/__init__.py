@@ -2,8 +2,8 @@
 Specific tool implementations
 """
 
-from agent_r1.tool.tools.comiler_autotuning.instrcount_tool import InstrCountTool
-from agent_r1.tool.tools.comiler_autotuning.knowledge_tool import KnowledgeTool
+from awarecompiler.tool.tools.compiler_autotuning.instrcount_tool import InstrCountTool
+from awarecompiler.tool.tools.compiler_autotuning.knowledge_tool import KnowledgeTool
 
 __all__ = [
     'InstrCountTool',

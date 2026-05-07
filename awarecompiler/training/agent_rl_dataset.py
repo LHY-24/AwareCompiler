@@ -24,7 +24,7 @@ from verl.utils.model import compute_position_id_with_mask
 import verl.utils.torch_functional as verl_F
 from verl.utils.dataset.rl_dataset import RLHFDataset
 
-from agent_r1.tool.tool_env import ToolEnv
+from awarecompiler.tool.tool_env import ToolEnv
 
 
 def collate_fn(data_list: list[dict]) -> dict:

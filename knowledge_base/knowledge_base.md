@@ -34,7 +34,7 @@
 
 ```bash
 # 从 Markdown 文件构建知识图谱
-python build_kg.py agent_r1/tool/tools/comiler_autotuning/knowledge_base/autophase_features.md
+python build_kg.py awarecompiler/tool/tools/compiler_autotuning/knowledge_base/autophase_features.md
 
 # 指定自定义工作目录
 python build_kg.py autophase_features.md ./my_compiler_kg

@@ -4,7 +4,7 @@ This artifact branch was prepared for double-anonymous NeurIPS review.
 
 ## Included
 
-- Core implementation under `agent_r1/`
+- Core implementation under `awarecompiler/`
 - Data construction scripts under `examples/data_preprocess/`
 - Compact SFT/RL parquet splits under `dataset/`
 - Knowledge-base documentation and compact processed artifacts under `knowledge_base/`

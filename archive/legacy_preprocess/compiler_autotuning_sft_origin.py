@@ -15,7 +15,7 @@ import sys
 
 # Add path to import RAG tool
 sys.path.append('../../')
-from agent_r1.tool.tools.comiler_autotuning.knowledge_tool import KnowledgeTool
+from awarecompiler.tool.tools.compiler_autotuning.knowledge_tool import KnowledgeTool
 
 # Initialize RAG tool
 rag_tool = KnowledgeTool()

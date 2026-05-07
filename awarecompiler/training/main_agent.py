@@ -16,8 +16,8 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 """
 from .agent_ray_trainer import RayAgentTrainer
 
-from agent_r1.tool import ToolEnv
-from agent_r1.tool.tools import _default_tools
+from awarecompiler.tool import ToolEnv
+from awarecompiler.tool.tools import _default_tools
 
 import ray
 import hydra

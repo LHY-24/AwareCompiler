@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from copy import deepcopy
 
-from agent_r1.tool.tool_base import Tool
+from awarecompiler.tool.tool_base import Tool
 
 # Independent step function
 def step(env: 'ToolEnv', action_text: str):

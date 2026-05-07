@@ -9,9 +9,9 @@ import importlib
 import os
 from openai import OpenAI
 
-from agent_r1.tool import ToolEnv
-from agent_r1.tool.tools import _default_tools
-import agent_r1.vllm_infer.config as default_config
+from awarecompiler.tool import ToolEnv
+from awarecompiler.tool.tools import _default_tools
+import awarecompiler.inference.config as default_config
 
 # ANSI color codes for colored output
 COLORS = {

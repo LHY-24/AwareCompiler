@@ -7,17 +7,17 @@ and the best one (with highest OverOz score) is selected as the final result.
 """
 
 # # 使用 16 次采样（默认）
-# python -m agent_r1.vllm_infer.chat_best_of_n \
+# python -m awarecompiler.inference.chat_best_of_n \
 #     --input-file dataset/rl/validation_data.parquet \
 #     --num-samples 16
 
 # # 自定义采样次数
-# python -m agent_r1.vllm_infer.chat_best_of_n \
+# python -m awarecompiler.inference.chat_best_of_n \
 #     --input-file dataset/rl/validation_data.parquet \
 #     -n 32
 
 # # 保存所有样本的详细结果
-# python -m agent_r1.vllm_infer.chat_best_of_n \
+# python -m awarecompiler.inference.chat_best_of_n \
 #     --input-file dataset/rl/validation_data.parquet \
 #     --num-samples 16 \
 #     --output-file results/best_of_n_results.csv \
@@ -36,10 +36,10 @@ from openai import OpenAI, APIError, APITimeoutError, APIConnectionError, RateLi
 from typing import List, Optional, Dict, Tuple
 
 # Assuming these imports are correct
-from agent_r1.tool import ToolEnv
-from agent_r1.tool.tools import _default_tools
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_instrcount import get_instrcount
-import agent_r1.vllm_infer.config as default_config
+from awarecompiler.tool import ToolEnv
+from awarecompiler.tool.tools import _default_tools
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_instrcount import get_instrcount
+import awarecompiler.inference.config as default_config
 
 # Best-of-N Configuration
 DEFAULT_NUM_SAMPLES = 16  # Default number of samples for Best-of-N
@@ -99,7 +99,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run Best-of-N batch inference on Parquet data and calculate OverOz.')
     parser.add_argument('--input-file', type=str, required=True, help='Path to the input Parquet file')
     parser.add_argument('--llvm-ir-dir', type=str, default='/PATH_PLACEHOLDER/NIPS_Material/examples/data_preprocess/llvmir_datasets/', help='Base directory containing the LLVM IR files')
-    parser.add_argument('--llvm-tools-path', type=str, default="/PATH_PLACEHOLDER/NIPS_Material/agent_r1/tool/tools/comiler_autotuning/raw_tool/", help='Path to LLVM tools directory')
+    parser.add_argument('--llvm-tools-path', type=str, default="/PATH_PLACEHOLDER/NIPS_Material/awarecompiler/tool/tools/compiler_autotuning/raw_tool/", help='Path to LLVM tools directory')
     parser.add_argument('--env', type=str, default=default_config.ENV, help='Environment for tool selection')
     parser.add_argument('--api-key', type=str, default=default_config.OPENAI_API_KEY, help='OpenAI API key')
     parser.add_argument('--api-base', type=str, default=default_config.OPENAI_API_BASE, help='OpenAI API base URL')

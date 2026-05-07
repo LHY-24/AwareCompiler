@@ -17,7 +17,7 @@ import sys
 # export PYTHONPATH=<repo_root>/verl/:$PYTHONPATH
 sys.path.append('../../')
 sys.path.append('../../verl/verl/utils')
-from agent_r1.tool.tools.comiler_autotuning.knowledge_tool import KnowledgeTool
+from awarecompiler.tool.tools.compiler_autotuning.knowledge_tool import KnowledgeTool
 
 # Initialize RAG tool
 rag_tool = KnowledgeTool()

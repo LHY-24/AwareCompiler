@@ -18,7 +18,7 @@ from collections import defaultdict, Counter
 os.environ["TRANSFORMERS_DISABLE_FLASH_ATTENTION"] = "1"
 os.environ["TRANSFORMERS_DISABLE_XFORMERS"] = "1"
 
-from agent_r1.tool.tool_base import Tool
+from awarecompiler.tool.tool_base import Tool
 
 class KnowledgeTool(Tool):
     """

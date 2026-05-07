@@ -4,7 +4,7 @@ Anonymous NeurIPS artifact for AwareCompiler, a knowledge-grounded agentic frame
 
 ## Repository Layout
 
-- `agent_r1/`: core implementation for agent training, rollout, compiler-tool interaction, reward computation, and vLLM inference.
+- `awarecompiler/`: core implementation for agent training, rollout, compiler-tool interaction, reward computation, and vLLM inference.
 - `scripts/train/`: SFT and RL training entry points.
 - `scripts/infer/`: model merge, vLLM serving, standard inference, and best-of-N inference.
 - `scripts/evaluate/`: result aggregation scripts for paper tables and baseline audits.

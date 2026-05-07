@@ -5,8 +5,8 @@ Tool for counting instructions in LLVM IR code with various optimizations
 import json
 import os
 from typing import Dict
-from agent_r1.tool.tool_base import Tool
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_instrcount import get_instrcount, get_overOz
+from awarecompiler.tool.tool_base import Tool
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_instrcount import get_instrcount, get_overOz
 
 class InstrCountTool(Tool):
     """

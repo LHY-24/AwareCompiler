@@ -15,9 +15,9 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_autophase import get_autophase_obs
-from agent_r1.tool.pass_list import Actions_LLVM_10_0_0
-from agent_r1.tool.pass_sy import synerpairs
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_autophase import get_autophase_obs
+from awarecompiler.tool.pass_list import Actions_LLVM_10_0_0
+from awarecompiler.tool.pass_sy import synerpairs
 
 def process_csv_file(csv_path: str, output_dir: str) -> None:
     """Process the CSV file to extract autophase features and create markdown files"""

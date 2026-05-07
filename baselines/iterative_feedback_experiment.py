@@ -38,7 +38,7 @@ from llm_client import chat_completion, get_llm_config
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LLVM_IR_DIR = str(REPO_ROOT / "examples/data_preprocess/llvmir_datasets")
-LLVM_TOOLS_PATH = str(REPO_ROOT / "agent_r1/tool/tools/comiler_autotuning/raw_tool")
+LLVM_TOOLS_PATH = str(REPO_ROOT / "awarecompiler/tool/tools/compiler_autotuning/raw_tool")
 DATASET_DIR = str(REPO_ROOT / "dataset/rl")
 
 # By default, evaluate the configured OpenAI-compatible model.
@@ -59,7 +59,7 @@ RETRY_DELAY = 2  # Seconds between API calls
 # ============================================================
 # Reuse the project's proven instrcount implementation
 sys.path.insert(0, str(REPO_ROOT))
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_instrcount import (
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_instrcount import (
     get_instrcount as _raw_get_instrcount, get_overOz as _raw_get_overOz
 )
 

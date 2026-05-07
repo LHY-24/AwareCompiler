@@ -26,7 +26,7 @@ DEFAULT_LLVM_IR_DIR = Path(
     os.environ.get("AWARECOMPILER_LLVM_IR_DIR", REPO_ROOT / "examples" / "data_preprocess" / "llvmir_datasets")
 )
 DEFAULT_LLVM_TOOLS_PATH = Path(
-    os.environ.get("AWARECOMPILER_LLVM_TOOLS_PATH", REPO_ROOT / "agent_r1" / "tool" / "tools" / "comiler_autotuning" / "raw_tool")
+    os.environ.get("AWARECOMPILER_LLVM_TOOLS_PATH", REPO_ROOT / "awarecompiler" / "tool" / "tools" / "compiler_autotuning" / "raw_tool")
 )
 DEFAULT_RESULTS_DIR = REPO_ROOT / "results" / "latest_llm"
 DEFAULT_DATASETS = [
@@ -40,7 +40,7 @@ DEFAULT_DATASETS = [
 ]
 
 sys.path.insert(0, str(REPO_ROOT))
-from agent_r1.tool.tools.comiler_autotuning.raw_tool.get_instrcount import get_overOz as _raw_get_overOz
+from awarecompiler.tool.tools.compiler_autotuning.raw_tool.get_instrcount import get_overOz as _raw_get_overOz
 
 
 def parse_models(spec: str) -> List[Tuple[str, str]]:

@@ -5,11 +5,11 @@ cd "$REPO_ROOT"
 export CUDA_VISIBLE_DEVICES=0,1
 
 # --- Configuration ---
-PYTHON_SCRIPT="agent_r1.vllm_infer.chat"
+PYTHON_SCRIPT="awarecompiler.inference.chat"
 DATA_DIR="./dataset/rl/"
 OUTPUT_FILE="overoz_summary_with_rate.txt" # Changed output filename
 LLVM_IR_DIR="$REPO_ROOT/examples/data_preprocess/llvmir_datasets"
-LLVM_TOOLS_PATH="$REPO_ROOT/agent_r1/tool/tools/comiler_autotuning/raw_tool/"
+LLVM_TOOLS_PATH="$REPO_ROOT/awarecompiler/tool/tools/compiler_autotuning/raw_tool/"
 
 declare -a DATASETS=(
     "rl_validation_cbench-v1.parquet"

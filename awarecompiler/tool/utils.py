@@ -14,7 +14,7 @@ except ImportError:
         "Please install it with: pip install transformers>=4.35.0"
     )
 
-from agent_r1.tool.tool_base import Tool
+from awarecompiler.tool.tool_base import Tool
 
 def function_to_tool(func: Callable) -> Tool:
     """

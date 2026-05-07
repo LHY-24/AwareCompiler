@@ -8,12 +8,12 @@ export CUDA_VISIBLE_DEVICES=0,1
 NUM_SAMPLES=16  # Number of samples for Best-of-N (can be changed: 4, 8, 16, 32, etc.)
 
 # --- Configuration ---
-PYTHON_SCRIPT="agent_r1.vllm_infer.chat_best_of_n"
+PYTHON_SCRIPT="awarecompiler.inference.chat_best_of_n"
 DATA_DIR="./dataset/rl/"
 OUTPUT_FILE="overoz_summary_best_of_${NUM_SAMPLES}.txt"
 RESULTS_DIR="./results/best_of_n/"
 LLVM_IR_DIR="$REPO_ROOT/examples/data_preprocess/llvmir_datasets"
-LLVM_TOOLS_PATH="$REPO_ROOT/agent_r1/tool/tools/comiler_autotuning/raw_tool/"
+LLVM_TOOLS_PATH="$REPO_ROOT/awarecompiler/tool/tools/compiler_autotuning/raw_tool/"
 
 # Create results directory if it doesn't exist
 mkdir -p "$RESULTS_DIR"
